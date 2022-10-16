@@ -1,0 +1,292 @@
+:root{
+    --font-title: "Hind Madurai", sans-serif;
+    --link-color: #c5cae9;
+    --link-color-hover: #5c6bc0;
+    --white : white;
+    --black: black;
+    --gray-text: #333;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "Montserrat", sans-serif;
+    background-color: #060708;
+    color: var(--white);
+}
+html::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 999;
+    width: 1%;
+    height: 100%;
+    background-color: var(--link-color-hover);
+    opacity: 0;
+    transition: all .5s;
+}
+html.transition::after{
+    opacity: 1;
+    width: 100%;
+    left: 0;
+}
+header {
+    padding: 1rem;
+    background-image: url(./assets/wave.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 0 -10px;
+}
+a {
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--link-color);
+    transition: all 300ms;
+}
+a:hover{
+    color: var(--link-color-hover);
+}
+li {
+    list-style: none;
+}
+h1{
+    font-family: var(--font-title);
+    font-size: 3rem;
+}
+
+header > div{
+    opacity: 0;
+    animation: toBottom .5s linear;
+}
+header > div.visible{
+    opacity: 1;
+}
+
+header a.logo {
+    color: var(--white);
+    font-size: 4rem;
+}
+header a:hover {
+    
+    transform: scale(1.05);
+}
+nav{
+    font-family: var(--font-title);
+}
+nav a:hover{
+    border-bottom: 1px solid var(--link-color-hover);
+}
+.container{
+    width: 90%;
+    max-width: 1440px;
+    margin: 0px auto;
+}
+.d-flex {
+    display: flex;
+}
+.align-center {
+    align-items: center;
+}
+.jc-between{
+    justify-content: space-between;
+}
+.text-center{
+    text-align: center;
+}
+.jc-end{
+    justify-content: flex-end;
+}
+.btn{
+    padding: 1rem;
+    border-radius: .5rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    background-color: var(--link-color-hover);
+    color: var(--black);
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
+    color: var(--white);
+    font-weight: 700;
+    border:none;
+}
+.btn::after{
+    content:  '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px;
+    height: 1px;
+    background-color: var(--link-color);
+    opacity: 0;
+    border-radius: 50%;
+    transform: scale(7);
+    transition: all 300ms;
+}
+.btn:hover::after{
+    content:  '';
+    opacity: 1;
+    transform: scale(200);
+}
+.btn:hover span{
+    color: var(--black);
+}
+.btn span{
+    position: relative;
+    z-index: 100;
+    transition: all 300ms;
+}
+
+
+/* MODAL */
+.modal{
+    position: fixed;
+    width: calc(100% - 4rem);
+    max-width: 1400px;
+    height: calc(100vh - 4rem);
+    overflow-y: scroll;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: .5rem;
+    background-color: var(--gray-text);
+    color: var(--white);
+    padding: 1rem;
+    box-shadow: var(--gray-text) 0px 8px 24px;
+    z-index: 100;
+    
+    opacity: 0;
+    visibility: hidden;
+    transition: .3s;
+}
+.modal::-webkit-scrollbar{
+    display: none;
+}
+.modal.show{
+    opacity: 1;
+    visibility: visible;
+}
+.modal img{
+    max-width: 15rem;
+    margin: 0px auto;
+    filter: invert(1);
+}
+
+.modal p{
+    color: var(--white);
+    padding: 0 3rem;
+    margin: 0.25rem 0 2rem 0;
+    line-height: 1.5;
+}
+.modal .close{
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--black);
+    border-radius: .25rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .3s;
+}
+hr{
+    margin: 0.5rem 0;
+}
+.modal .close:hover{
+    background-color: var(--black);
+    color: var(--white);
+}
+
+/* BANNER */
+.banner-information h1,
+.banner-information p,
+.banner-information button,
+.banner-img img{
+    opacity: 0;
+}
+.banner-information h1.visible{
+    opacity: 1;
+    animation: visible 1s linear;
+}
+.banner-information p.visible{
+    opacity: 1;
+    animation: visible 1.25s linear;
+}
+.banner-information button.visible{
+    opacity: 1;
+    animation: visible 1.5s linear;
+}
+.banner-img img.visible{
+    opacity: 1;
+    animation: visible 1.75s linear;
+}
+.banner-information{
+    flex-basis: 50%;
+}
+.banner-information p{
+    line-height: 1.5;
+    margin-top: 1rem;
+}
+.banner-img{
+    flex-basis: 50%;
+}
+.banner-img img{
+    width: 100%;
+}
+
+
+/* ANIMACIONES */
+@keyframes toBottom {
+    0%{
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    30%{
+        opacity: 0;
+    }
+    100%{
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+@keyframes visible {
+    0%{
+        opacity: 0;
+    }
+    30%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+
+
+@media (max-width:768px) {
+    .banner{
+        margin-top: 2rem;
+    }
+    .banner > div{
+        flex-direction: column;
+    }
+    .banner-information{
+        text-align: center;
+    }
+    h1{
+        font-size: 1.9rem;
+        text-align: center;
+    }
+    .modal img{
+        display: none;
+    }
+    .modal p{
+        padding: 0;
+        text-align: start;
+    }
+    .modal h3{
+        text-align: start;
+    }
+}
