@@ -3,8 +3,9 @@ import image from "../assets/data-scraping.svg";
 import { MainContext } from "../context/MainContext";
 
 function ModalLegal() {
-    const { toggleModal } = useContext(MainContext);
+    const { toggleModal, viewSearch } = useContext(MainContext);
     return (
+        viewSearch ? '' :
         <div id="modal" className="modal container">
             <div className="d-flex jc-end" onClick={() => { toggleModal(); }} >
                 <button className="close">X</button>

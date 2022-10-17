@@ -20,26 +20,19 @@ body {
 html::after{
     content: '';
     position: absolute;
-    top: 0;
-    left: 50%;
+    left: 0;
+    top: 50%;
     z-index: 999;
-    width: 1%;
-    height: 100%;
+    width: 100%;
+    height: 1%;
     background-color: var(--link-color-hover);
     opacity: 0;
     transition: all .5s;
 }
 html.transition::after{
     opacity: 1;
-    width: 100%;
-    left: 0;
-}
-header {
-    padding: 1rem;
-    background-image: url(./assets/wave.svg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: 0 -10px;
+    height: 100%;
+    top: 0;
 }
 a {
     text-decoration: none;
@@ -58,28 +51,8 @@ h1{
     font-size: 3rem;
 }
 
-header > div{
-    opacity: 0;
-    animation: toBottom .5s linear;
-}
-header > div.visible{
-    opacity: 1;
-}
 
-header a.logo {
-    color: var(--white);
-    font-size: 4rem;
-}
-header a:hover {
-    
-    transform: scale(1.05);
-}
-nav{
-    font-family: var(--font-title);
-}
-nav a:hover{
-    border-bottom: 1px solid var(--link-color-hover);
-}
+
 .container{
     width: 90%;
     max-width: 1440px;
@@ -93,6 +66,9 @@ nav a:hover{
 }
 .jc-between{
     justify-content: space-between;
+}
+.jc-center{
+    justify-content: center;
 }
 .text-center{
     text-align: center;
@@ -142,6 +118,90 @@ nav a:hover{
     transition: all 300ms;
 }
 
+form{
+    flex-grow: 1;
+}
+.btn-search{
+    padding: 0;
+    margin-top: 0;
+    height: 40px;
+    width: 2.5rem;
+    border: none;
+    outline: none;
+    border-radius: 0 .25rem .25rem 0;
+    cursor: pointer;
+    transition: all .3s;
+    background-color: var(--link-color);
+}
+.btn-search:hover{
+    background-color: var(--link-color-hover);
+}
+.btn-search > *{
+    color: var(--black);
+    font-size: 1.25rem;
+}
+input[type="text"]{
+    width: 100%;
+    height: 40px;
+    background-color: var(--white);
+    border: none;
+    outline: none;
+    border-radius: .25rem 0  0 .25rem ;
+    padding-left: 1rem;
+}
+.input-group{
+    width: 15rem;
+    max-width: 250px;
+    position: relative;
+}
+.input-group label{
+    color: var(--gray-text);
+    position: absolute;
+    top: 10px;
+    left: 1rem;
+    z-index: 10;
+    pointer-events: none;
+    transition: all .3s;
+}
+input[type="text"]:focus ~ label,
+input[type="text"]:valid ~ label{
+    font-size: 0.8rem;
+    color:var(--white);
+    top: -1rem;
+    left: 0rem;
+}
+
+
+/* HEADER */
+header {
+    padding: 1rem;
+    background-image: url(./assets/wave.svg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: 0 -10px;
+}
+header > div{
+    opacity: 0;
+    animation: toBottom .5s linear;
+}
+header > div.visible{
+    opacity: 1;
+}
+
+header a.logo {
+    color: var(--white);
+    font-size: 4rem;
+}
+header a:hover {
+    
+    transform: scale(1.05);
+}
+nav{
+    font-family: var(--font-title);
+}
+nav a:hover{
+    border-bottom: 1px solid var(--link-color-hover);
+}
 
 /* MODAL */
 .modal{
