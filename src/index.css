@@ -76,6 +76,10 @@ h1{
 .jc-end{
     justify-content: flex-end;
 }
+.flex-wrap{
+    flex-wrap: wrap;
+    justify-content: center;
+}
 .btn{
     padding: 1rem;
     border-radius: .5rem;
@@ -198,6 +202,8 @@ header a:hover {
 }
 nav{
     font-family: var(--font-title);
+    flex-grow: 1;
+    text-align: end;
 }
 nav a:hover{
     border-bottom: 1px solid var(--link-color-hover);

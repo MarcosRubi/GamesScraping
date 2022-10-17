@@ -32,7 +32,7 @@ function Header() {
     return (
         <header ref={headerRef}>
             <div
-                className={`d-flex align-center jc-between container ${header}`}
+                className={`d-flex align-center jc-between container flex-wrap ${header}`}
             >
                 <a href="#" className="logo d-flex" onClick={()=>{
                     if(viewSearch){
