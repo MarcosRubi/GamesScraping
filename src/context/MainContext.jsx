@@ -30,10 +30,18 @@ export function MainContextProvider(props) {
     }
     async function getGames() {
         let result = []
-        const response = await fetch(PRIV);
-        const dataSteam = await response.json();
+        const responseSteam = await fetch(`http://localhost:3000/steam/${nameGame}`);
+        const dataSteam = await responseSteam.json();
+
+        const responseGog = await fetch(`http://localhost:3000/gog/${nameGame}`);
+        const dataGog = await responseGog.json();
+        
+        const responseInstantGaming = await fetch(`http://localhost:3000/instant-gaming/${nameGame}`);
+        const dataInstantGaming = await responseInstantGaming.json();
 
         result.push({steam:dataSteam})
+        result.push({gog:dataGog})
+        result.push({instantGaming:dataInstantGaming})
         // result.push({origin:dataSteam})
 
         setGameResult(result)

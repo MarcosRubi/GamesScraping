@@ -1,5 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { MainContext } from "../context/MainContext";
+import GetGameGog from "./GetGameGog";
+import GetGameInstantGaming from "./GetGameInstantGaming";
 import GetGameSteam from "./GetGameSteam";
 import ShowLoading from './ShowLoading'
 
@@ -39,12 +41,8 @@ function GamesResultSearchContainer() {
         <>
             <section className={`results container ${results}`} ref={resultsRef}>
                 <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
+                {/* <GetGameGog data={gamesResult.filter((element) => element.gog)}/> */}
+                {/* <GetGameInstantGaming data={gamesResult.filter((element) => element.instantGaming)}/> */}
             </section>
         </>
     );

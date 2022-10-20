@@ -1,9 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { MainContext } from "../context/MainContext";
 import { AiOutlineSearch } from "react-icons/ai";
 
 function FormHeader() {
     const { setNameGame, nameGame, getGames, setShowLoading } = useContext(MainContext);
+    const formRef = useRef(null);
+    const [form, setForm] = useState(null);
+    const [entryObserver, setEntryObserver] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const entry = entries[0];
+                setEntryObserver(entry.isIntersecting);
+                if (entryObserver) {
+                    setForm("visible");
+                }
+            },
+            {
+                root: null,
+                rootMargin: "0px",
+                threshold: 0.1,
+            }
+        );
+        observer.observe(formRef.current);
+    }, [entryObserver]);
     function handleSubmit(e) {
         e.preventDefault();
         getGames();
@@ -15,7 +36,8 @@ function FormHeader() {
             onSubmit={(e) => {
                 handleSubmit(e);
             }}
-            className="search"
+            className={`search ${form}`}
+            ref={formRef}
         >
             <div className="d-flex align-center jc-end">
                 <div className="input-group">

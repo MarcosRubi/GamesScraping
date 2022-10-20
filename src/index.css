@@ -63,6 +63,9 @@ h1{
 .align-center {
     align-items: center;
 }
+.flex-column{
+    flex-direction: column;
+}
 .jc-between{
     justify-content: space-between;
 }
@@ -132,11 +135,28 @@ h1{
     margin: 0.5rem auto;
 }
 .btn-primary::after{
-    background-color: var(--white);
+    background-color: rgb(227, 227, 227);
 }
-
+.changeResult{
+    position: absolute;
+    top: 0;
+    right: 5px;
+    z-index: 100;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    font-size: 2rem;
+    color: var(--white);
+    font-weight: 900;
+    cursor: pointer;
+}
 form{
     flex-grow: 1;
+    opacity: 0;
+}
+form.visible{
+    opacity: 1;
+    animation: visible .5s linear;
 }
 .btn-search{
     padding: 0;
@@ -342,7 +362,7 @@ hr{
     transition: all .5s;
 }
 .cardGame:hover{
-    transform: scale(1.05);
+    box-shadow: rgba(233, 233, 250, 0.2) 0px 7px 29px 0px;
 }
 .cardGame:first-child{
     animation: cardAnimate .1s linear;
@@ -368,13 +388,18 @@ hr{
 .cardGame:nth-child(8){
     animation: cardAnimate .5s linear;
 }
-.cardGameHeader img{
-    display: flex;
+.cardGameHeader{
+    max-width: 8rem;
     margin: 0px auto;
+}
+.cardGameHeader img{
+    width: 100%;
+    max-height: 3rem;
+    object-fit: contain;
     transform: scale(1.25);
 } 
 .cardGameContent h3{
-    font-size: 1.25rem;
+    font-size: 1rem;
     margin-top: 1rem;
 }
 .cardGame--price{
@@ -388,7 +413,7 @@ hr{
     margin-right: 0.5rem;
 }
 .cardGame--price .price-now{
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 900;
     padding: 0.5rem;
     border-radius: .5rem;
@@ -406,6 +431,13 @@ hr{
     z-index: 10;
     top: 0;
     left: 0;
+}
+.cardGameContent .message{
+    font-size: 0.75rem;
+    color: var(--white);
+    background-color: var(--black);
+    border-radius: .25rem;
+    padding: .25rem;
 }
 
 .loading{
