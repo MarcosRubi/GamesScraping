@@ -34,7 +34,7 @@ export function MainContextProvider(props) {
         const dataSteam = await response.json();
 
         result.push({steam:dataSteam})
-        result.push({origin:dataSteam})
+        // result.push({origin:dataSteam})
 
         setGameResult(result)
         setShowLoading(false)

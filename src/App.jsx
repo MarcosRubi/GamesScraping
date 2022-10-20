@@ -8,11 +8,11 @@ import { MainContext } from "./context/MainContext";
 function App() {
     const {viewSearch} = useContext(MainContext)
     return (
-        <main>
+        <>
             <Header/>
             {viewSearch ? <GamesResultSearchContainer/> : <Banner/> }
             <ModalLegal/>
-        </main>
+        </>
     );
 }
 

@@ -191,7 +191,7 @@ input[type="text"]:valid ~ label{
 
 
 /* HEADER */
-header {
+header{
     padding: 1rem;
     background-image: url(./assets/wave.svg);
     background-repeat: no-repeat;
@@ -228,11 +228,10 @@ nav a:hover{
     position: fixed;
     width: calc(100% - 4rem);
     max-width: 1400px;
-    height: calc(100vh - 4rem);
     overflow-y: scroll;
-    top: 50%;
+    top: 10%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
 
     border-radius: .5rem;
     background-color: var(--gray-text);
@@ -492,7 +491,7 @@ hr{
 }
 
 
-@media (max-width:768px) {
+@media (max-width:767px) {
     .btn{
         margin: 1rem auto;
     }
@@ -518,5 +517,10 @@ hr{
     }
     .modal h3{
         text-align: start;
+    }
+}
+@media (max-width:579px) {
+    .modal{
+        height: calc(100vh - 8rem);
     }
 }
