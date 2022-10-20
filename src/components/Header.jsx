@@ -1,11 +1,11 @@
-import { GiGamepad } from "react-icons/gi";
-import { AiOutlineSearch } from "react-icons/ai";
 import { useContext, useEffect, useRef, useState } from "react";
 import { MainContext } from "../context/MainContext";
+import FormHeader from "./FormHeader";
+import NavHeader from "./NavHeader";
+import LogoHeader from "./LogoHeader";
 
 function Header() {
-    const { toggleModal, viewSearch, loadViewToSearch, transitionPage } = useContext(MainContext);
-
+    const { viewSearch} = useContext(MainContext);
     const headerRef = useRef(null);
     const [header, setHeader] = useState(null);
     const [entryObserver, setEntryObserver] = useState(false);
@@ -28,41 +28,11 @@ function Header() {
         observer.observe(headerRef.current);
     }, [entryObserver]);
 
-
     return (
         <header ref={headerRef}>
-            <div
-                className={`d-flex align-center jc-between container flex-wrap ${header}`}
-            >
-                <a href="#" className="logo d-flex" onClick={()=>{
-                    if(viewSearch){
-                        transitionPage();loadViewToSearch()
-                    } }}>
-                    <GiGamepad />
-                </a>
-                {viewSearch ? (
-                    <form action="#" onSubmit={(e)=>{e.preventDefault();}} className="search">
-                        <div className="d-flex align-center jc-end">
-                        <div className="input-group">
-                            <input type="text" name="txtSearch" id="txtSearch" required="required" />
-                            <label htmlFor="txtSearch">Nombre del juego</label>
-                        </div>
-                        <button type="submit" className="btn-search"><AiOutlineSearch/></button>
-                        </div>
-                    </form>
-                ) : (
-                    <nav>
-                        <ul>
-                            <li
-                                onClick={() => {
-                                    toggleModal();
-                                }}
-                            >
-                                <a href="#">Web Scraping es legal?</a>
-                            </li>
-                        </ul>
-                    </nav>
-                )}
+            <div className={`d-flex align-center jc-between container flex-wrap ${header}`}>
+                <LogoHeader/>
+                {viewSearch ? <FormHeader /> : <NavHeader/>}
             </div>
         </header>
     );

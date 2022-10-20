@@ -3,8 +3,7 @@ import BannerImg from "../assets/banner.png";
 import { MainContext } from "../context/MainContext";
 
 function Banner() {
-    const { transitionPage, loadViewToSearch } =
-        useContext(MainContext);
+    const { transitionPage, loadViewToSearch } = useContext(MainContext);
 
     const bannerRef = useRef(null);
     const [banner, setBanner] = useState(null);

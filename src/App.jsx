@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import Banner from "./components/Banner";
-import GamesWithDiscountContainer from "./components/GamesWithDiscountContainer";
+import GamesResultSearchContainer from "./components/GamesResultSearchContainer";
 import Header from "./components/Header";
 import ModalLegal from "./components/ModalLegal";
 import { MainContext } from "./context/MainContext";
@@ -10,7 +10,7 @@ function App() {
     return (
         <main>
             <Header/>
-            {viewSearch ? <GamesWithDiscountContainer/> : <Banner/> }
+            {viewSearch ? <GamesResultSearchContainer/> : <Banner/> }
             <ModalLegal/>
         </main>
     );

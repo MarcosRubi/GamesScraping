@@ -5,6 +5,10 @@ export const MainContext = createContext();
 export function MainContextProvider(props) {
     const [body, setBody] = useState(null);
     const [viewSearch, setViewSearch] = useState(false);
+    const [gamesResult, setGameResult] = useState([]);
+    const [nameGame, setNameGame] = useState(null);
+    const [showLoading, setShowLoading] = useState(false)
+
 
     useEffect(() => {
         setBody(document.querySelector("html"));
@@ -24,10 +28,21 @@ export function MainContextProvider(props) {
             transitionPage()
         }, 1000);
     }
+    async function getGames() {
+        let result = []
+        const response = await fetch(PRIV);
+        const dataSteam = await response.json();
+
+        result.push({steam:dataSteam})
+        result.push({origin:dataSteam})
+
+        setGameResult(result)
+        setShowLoading(false)
+    }
 
     return (
         <MainContext.Provider
-            value={{ toggleModal, transitionPage, loadViewToSearch, viewSearch, setViewSearch }}
+            value={{ toggleModal, transitionPage, loadViewToSearch, viewSearch, setViewSearch, getGames, setNameGame, nameGame, gamesResult, setShowLoading, showLoading }}
         >
             {props.children}
         </MainContext.Provider>
