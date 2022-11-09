@@ -15,7 +15,11 @@ function GetGameGog({ data }) {
     }
     return (
         <div className="cardGame">
-            <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><AiOutlineReload/></button>
+            {data[0].gog.length > 1 
+            ? <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><AiOutlineReload/></button> 
+            : ''
+            }
+            
             {data[0].gog[id].discount 
                 ? <div className="cardGame--discount"><span className="discount">{data[0].gog[id].discount}</span></div> 
                 : ""

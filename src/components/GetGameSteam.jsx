@@ -15,7 +15,10 @@ function GetGameSteam({ data }) {
 
     return (
         <div className="cardGame">
-            <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><AiOutlineReload/></button>
+            {data[0].steam.length > 1 
+            ? <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><AiOutlineReload/></button>
+            : ''
+            }
             {data[0].steam[id].discount 
                 ? <div className="cardGame--discount">
                     <span className="discount">{data[0].steam[id].discount}</span>

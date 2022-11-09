@@ -15,7 +15,11 @@ function GetGameInstantGaming({ data }) {
     }
     return (
         <div className="cardGame">
-            <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><AiOutlineReload/></button>
+            {data[0].instantGaming.length > 1 
+            ? <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><AiOutlineReload/></button>
+            : ''
+            }
+            
             {data[0].instantGaming[id].discount ? <div className="cardGame--discount"><span className="discount">{data[0].instantGaming[id].discount}</span></div> : ""}
 
             <div className="cardGameHeader">
