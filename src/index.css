@@ -50,6 +50,16 @@ h1{
     font-family: var(--font-title);
     font-size: 3rem;
 }
+h2{
+    margin-top: 2rem;
+    font-size: 1.5rem;
+}
+h2 span{
+    color: var(--link-color-hover);
+}
+section{
+    padding-bottom: 60px;
+}
 
 
 .container{
@@ -346,6 +356,7 @@ hr{
     margin: 1rem auto;
     position: relative;
     opacity: 0;
+    min-height: 315px;
 }
 .results.visible{
     animation: visible 1s linear;
@@ -440,26 +451,29 @@ hr{
     padding: .25rem;
 }
 
+
 .loading{
-    width: 4rem;
+    width: 90%;
+    max-width: 1440px;
     height: 4rem;
     position: absolute;
     opacity: 0;
+    display: flex;
+    justify-content: center;
 }
 .loading.visible{
     animation: visible .5s linear;
     opacity: 1;
 }
-.loading::after{
-    content: 'Buscando...';
-    color: var(--white);
-    opacity: .7;
+.loading label{
+    position: absolute;
+    font-size: 0.8rem;
 }
 .loading span{
     position: absolute;
     top: 2rem;
-    left: 0;
-    width: 100%;
+    left: calc(50% - 2rem);
+    width: 4rem;
     height: 100%;
     display: block;
     background-color: var(--link-color-hover);

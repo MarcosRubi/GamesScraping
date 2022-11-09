@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-function ShowLoading() {
+function ShowLoading({ message = "Buscando..." }) {
     const loadingRef = useRef(null);
     const [loading, setLoading] = useState(null);
     const [entryObserver, setEntryObserver] = useState(false);
@@ -22,7 +22,13 @@ function ShowLoading() {
         );
         observer.observe(loadingRef.current);
     }, [entryObserver]);
-    return <div className={`loading ${loading}`} ref={loadingRef}><span></span><span></span></div>;
+    return (
+        <div className={`loading ${loading}`} ref={loadingRef}>
+            <span></span>
+            <span></span>
+            <label>{message}</label>
+        </div>
+    );
 }
 
 export default ShowLoading;

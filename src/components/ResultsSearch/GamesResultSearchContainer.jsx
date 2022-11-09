@@ -1,9 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { MainContext } from "../context/MainContext";
+import { MainContext } from "../../context/MainContext";
 import GetGameGog from "./GetGameGog";
 import GetGameInstantGaming from "./GetGameInstantGaming";
 import GetGameSteam from "./GetGameSteam";
-import ShowLoading from './ShowLoading'
+import ShowLoading from '../ShowLoading'
 
 function GamesResultSearchContainer() {
     const { gamesResult, showLoading } = useContext(MainContext);
@@ -33,16 +33,19 @@ function GamesResultSearchContainer() {
         return<section className={`results container ${results}`} ref={resultsRef}><ShowLoading/></section>
     }
     if (gamesResult.length === 0) {
-        return <section className={`results container ${results}`} ref={resultsRef}></section>;
+        return <section className={` container ${results}`} ref={resultsRef}></section>;
     }
 
     
     return (
         <>
-            <section className={`results container ${results}`} ref={resultsRef}>
-                <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                <GetGameGog data={gamesResult.filter((element) => element.gog)}/>
-                <GetGameInstantGaming data={gamesResult.filter((element) => element.instantGaming)}/>
+            <section className={`container`} ref={resultsRef}>
+                <h2>Resultados de búsqueda </h2>
+                <div className={`results ${results}`}>
+                    <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
+                    <GetGameGog data={gamesResult.filter((element) => element.gog)}/>
+                    <GetGameInstantGaming data={gamesResult.filter((element) => element.instantGaming)}/>
+                </div>
             </section>
         </>
     );

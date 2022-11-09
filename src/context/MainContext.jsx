@@ -42,7 +42,6 @@ export function MainContextProvider(props) {
         result.push({steam:dataSteam})
         result.push({gog:dataGog})
         result.push({instantGaming:dataInstantGaming})
-        // result.push({origin:dataSteam})
 
         setGameResult(result)
         setShowLoading(false)
