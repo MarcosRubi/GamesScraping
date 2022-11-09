@@ -5,12 +5,12 @@ import { AiOutlineReload } from "react-icons/ai";
 function GetGameSteam({ data }) {
     const [id, setId] = useState(0)
 
-    if (data[0].steam.steam === "null") {
-        return <GetNotFound platform={"Steam"} />;
-    }
-
     function handleOnClick() {
         id + 1 === data[0].steam.length ? setId(0) : setId(id+1)
+    }
+
+    if (data[0].steam.steam === "null") {
+        return <GetNotFound platform={"Steam"} />;
     }
 
     return (

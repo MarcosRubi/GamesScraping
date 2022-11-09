@@ -41,7 +41,7 @@ function GamesResultSearchContainer() {
         <>
             <section className={`results container ${results}`} ref={resultsRef}>
                 <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
-                {/* <GetGameGog data={gamesResult.filter((element) => element.gog)}/> */}
+                <GetGameGog data={gamesResult.filter((element) => element.gog)}/>
                 {/* <GetGameInstantGaming data={gamesResult.filter((element) => element.instantGaming)}/> */}
             </section>
         </>
