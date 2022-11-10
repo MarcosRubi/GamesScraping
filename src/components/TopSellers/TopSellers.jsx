@@ -23,18 +23,19 @@ function TopSeller({platform, data}) {
         );
         observer.observe(DivResultsRef.current);
     }, [entryObserver]);
+    console.log(data)
 
     if (data === null) {
         return (
-            <section className={`top-sellers-${platform} container ${DivResults}`} ref={DivResultsRef} >
+            <section className={`top-sellers-${platform.split(' ').join('-')} container ${DivResults}`} ref={DivResultsRef} >
                 <ShowLoading message={`Obteniendo los más vendidos de ${platform}...`} />
             </section>
         );
     }
 
     return (
-        <section className={`top-sellers-${platform} container`} ref={DivResultsRef}>
-            <h2>Los juegos más vendidos de {platform}:</h2>
+        <section className={`top-sellers-${platform.split(' ').join('-')} container`} ref={DivResultsRef}>
+            <h2>Los juegos más vendidos de <span>{platform}</span>:</h2>
             <div className={`results ${DivResults}`}>
                 {data.map((game, index) => (
                     <div className="cardGame" key={index}>
@@ -56,7 +57,7 @@ function TopSeller({platform, data}) {
                         <div className="cardGameContent">
                             <h3>{game.name}</h3>
                             <div className="cardGame--price">
-                                {game.discount ? (
+                                {game.price.length > 1 ? (
                                     <span className="price-old">
                                         {game.price[1].old}
                                     </span>
@@ -74,6 +75,10 @@ function TopSeller({platform, data}) {
                             >
                                 <span>Comprar en {platform}</span>
                             </a>
+                            {platform.split(' ').join('-') === 'instant-gaming' 
+                                ? <div className="message">El precio es en EUROS</div>
+                                : ''
+                            }
                         </div>
                     </div>
                 ))}
