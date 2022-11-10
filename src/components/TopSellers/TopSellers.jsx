@@ -1,22 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import ShowLoading from "../ShowLoading";
 
-function TopSellersSteam() {
-    const [games, setGames] = useState(null);
-    const resultsRef = useRef(null);
-    const [results, setResults] = useState(null);
+function TopSeller({platform, data}) {
+    const DivResultsRef = useRef(null);
+    const [DivResults, setDivResults] = useState(null);
     const [entryObserver, setEntryObserver] = useState(false);
-
-    async function getGames() {
-        const response = await fetch(`http://localhost:3000/top-sellers-steam`);
-        const data = await response.json();
-
-        setGames(data);
-    }
-
-    useEffect(() => {
-        getGames();
-    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -24,7 +12,7 @@ function TopSellersSteam() {
                 const entry = entries[0];
                 setEntryObserver(entry.isIntersecting);
                 if (entryObserver) {
-                    setResults("visible");
+                    setDivResults("visible");
                 }
             },
             {
@@ -33,27 +21,22 @@ function TopSellersSteam() {
                 threshold: 0.1,
             }
         );
-        observer.observe(resultsRef.current);
+        observer.observe(DivResultsRef.current);
     }, [entryObserver]);
 
-    if (games === null) {
+    if (data === null) {
         return (
-            <section
-                className={`top-sellers-steam container ${results}`}
-                ref={resultsRef}
-            >
-                <ShowLoading
-                    message={"Obteniendo los más vendidos de steam..."}
-                />
+            <section className={`top-sellers-${platform} container ${DivResults}`} ref={DivResultsRef} >
+                <ShowLoading message={`Obteniendo los más vendidos de ${platform}...`} />
             </section>
         );
     }
 
     return (
-        <section className={`top-sellers-steam container`} ref={resultsRef}>
-            <h2>Los juegos más vendidos de steam:</h2>
-            <div className={`results ${results}`}>
-                {games.map((game, index) => (
+        <section className={`top-sellers-${platform} container`} ref={DivResultsRef}>
+            <h2>Los juegos más vendidos de {platform}:</h2>
+            <div className={`results ${DivResults}`}>
+                {data.map((game, index) => (
                     <div className="cardGame" key={index}>
                         {game.discount ? (
                             <div className="cardGame--discount">
@@ -67,7 +50,7 @@ function TopSellersSteam() {
                         <div className="cardGameHeader">
                             <img
                                 src={game.imgUrl}
-                                alt={`Imagen juego ${game.name} de Steam`}
+                                alt={`Imagen juego ${game.name} de ${platform}`}
                             />
                         </div>
                         <div className="cardGameContent">
@@ -89,7 +72,7 @@ function TopSellersSteam() {
                                 target="_blank"
                                 className="btn btn-primary"
                             >
-                                <span>Comprar en steam</span>
+                                <span>Comprar en {platform}</span>
                             </a>
                         </div>
                     </div>
@@ -99,4 +82,4 @@ function TopSellersSteam() {
     );
 }
 
-export default TopSellersSteam;
+export default TopSeller;

@@ -39,7 +39,7 @@ function GamesResultSearchContainer() {
     
     return (
         <>
-            <section className={`container`} ref={resultsRef}>
+            <section className={`container results-search`} ref={resultsRef}>
                 <h2>Resultados de búsqueda </h2>
                 <div className={`results ${results}`}>
                     <GetGameSteam data={gamesResult.filter((element) => element.steam)}/>
