@@ -30,7 +30,7 @@ function GamesResultSearchContainer() {
     }, [entryObserver]);
 
     if (showLoading) {
-        return<section className={`results container ${results}`} ref={resultsRef}><ShowLoading/></section>
+        return<section className={`results load container ${results}`} ref={resultsRef}><ShowLoading/></section>
     }
     if (gamesResult.length === 0) {
         return <section className={` container ${results}`} ref={resultsRef}></section>;

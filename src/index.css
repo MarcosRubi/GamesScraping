@@ -356,7 +356,10 @@ hr{
     margin: 1rem auto;
     position: relative;
     opacity: 0;
-    min-height: 315px;
+    min-height: 335px;
+}
+.results.load{
+    min-height: 100px;
 }
 .results.visible{
     animation: visible 1s linear;
