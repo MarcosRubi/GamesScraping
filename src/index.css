@@ -145,6 +145,9 @@ h2 span{
 .btn-primary::after{
     background-color: rgb(227, 227, 227);
 }
+.btn-outline{
+    padding: 0.75rem 1rem;
+}
 .changeResult{
     position: absolute;
     top: 0;
@@ -347,22 +350,28 @@ hr{
 /*CARDGAME */
 
 .results{
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(15rem,1fr));
+    display: flex;
     justify-items: center;
     gap: 30px 30px;
     margin: 1rem auto;
     position: relative;
     opacity: 0;
     min-height: 335px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+}
+.results::-webkit-scrollbar{
+    appearance: none;
 }
 .results.load{
     min-height: 100px;
+    overflow: hidden;
 }
 .results.visible{
     animation: visible 1s linear;
     opacity: 1;
 }
+
 .cardGame{
     background-color: var(--link-color-hover);
     text-align: center;
@@ -370,7 +379,8 @@ hr{
     border-radius: .25rem;
     position: relative;
     overflow: hidden;
-    width: 260px;
+    min-width: 280px;
+    max-width: 280px;
     transition: all .5s;
 }
 .cardGame:hover{
@@ -401,18 +411,15 @@ hr{
     animation: cardAnimate .5s linear;
 }
 .cardGameHeader{
-    max-width: 8rem;
     margin: 0px auto;
 }
 .cardGameHeader img{
     width: 100%;
-    max-height: 3rem;
     object-fit: contain;
-    transform: scale(1.25);
 } 
 .cardGameContent h3{
-    font-size: 1rem;
     margin-top: 1rem;
+    font-size: 1rem;
 }
 .cardGame--price{
     display: flex;
@@ -574,6 +581,13 @@ hr{
     }
     .modal h3{
         text-align: start;
+    }
+    h2{
+        font-size: 1.2rem;
+        padding-right: 4rem;
+    }
+    .btn-outline{
+        min-width: 6rem;
     }
 }
 @media (max-width:579px) {

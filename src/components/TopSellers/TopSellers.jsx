@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import ShowLoading from "../ShowLoading";
 
-function TopSeller({platform, data}) {
+function TopSeller({ platform, data }) {
     const DivResultsRef = useRef(null);
     const [DivResults, setDivResults] = useState(null);
     const [entryObserver, setEntryObserver] = useState(false);
+    const [width, setWidth] = useState(310);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -23,19 +24,51 @@ function TopSeller({platform, data}) {
         );
         observer.observe(DivResultsRef.current);
     }, [entryObserver]);
-    console.log(data)
 
     if (data === null) {
         return (
-            <section className={`top-sellers-${platform.split(' ').join('-')} container ${DivResults}`} ref={DivResultsRef} >
-                <ShowLoading message={`Obteniendo los más vendidos de ${platform}...`} />
+            <section
+                className={`top-sellers-${platform
+                    .split(" ")
+                    .join("-")} container ${DivResults}`}
+                ref={DivResultsRef}
+            >
+                <ShowLoading
+                    message={`Obteniendo los más vendidos de ${platform}...`}
+                />
             </section>
         );
     }
 
+    const handleOnClick = () => {
+        let offsetWidth = (data.length * 280 + (30*data.length)) / 2
+        let div = document.querySelector(`.top-sellers-${platform.split(" ").join("-")} .results`)
+
+        width >= offsetWidth ? setWidth(0) : setWidth(width + 280 + 30);
+        div.scrollLeft = width;
+        console.log(offsetWidth, width)
+        return;
+    };
+
     return (
-        <section className={`top-sellers-${platform.split(' ').join('-')} container`} ref={DivResultsRef}>
-            <h2>Los juegos más vendidos de <span>{platform}</span>:</h2>
+        <section
+            className={`top-sellers-${platform.split(" ").join("-")} container`}
+            ref={DivResultsRef}
+        >
+            <div className="d-flex align-center jc-between">
+                <h2>
+                    Los juegos más vendidos de <span>{platform}</span>:
+                </h2>
+                <div className="controls">
+                    <button className="btn btn-outline"
+                        onClick={() => {
+                            handleOnClick("left");
+                        }}
+                    >
+                        <span> Ver más</span>
+                    </button>
+                </div>
+            </div>
             <div className={`results ${DivResults}`}>
                 {data.map((game, index) => (
                     <div className="cardGame" key={index}>
@@ -75,10 +108,14 @@ function TopSeller({platform, data}) {
                             >
                                 <span>Comprar en {platform}</span>
                             </a>
-                            {platform.split(' ').join('-') === 'instant-gaming' 
-                                ? <div className="message">El precio es en EUROS</div>
-                                : ''
-                            }
+                            {platform.split(" ").join("-") ===
+                            "instant-gaming" ? (
+                                <div className="message">
+                                    El precio es en EUROS
+                                </div>
+                            ) : (
+                                ""
+                            )}
                         </div>
                     </div>
                 ))}
