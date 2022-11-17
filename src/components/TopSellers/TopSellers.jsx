@@ -41,12 +41,12 @@ function TopSeller({ platform, data }) {
     }
 
     const handleOnClick = () => {
-        let offsetWidth = (data.length * 280 + (30*data.length)) / 2
+        let offsetWidth = (data.length * 280 + (30*data.length)) - document.querySelector('.top-sellers-steam').offsetWidth
         let div = document.querySelector(`.top-sellers-${platform.split(" ").join("-")} .results`)
 
         width >= offsetWidth ? setWidth(0) : setWidth(width + 280 + 30);
+        width+280+30 > offsetWidth ? setWidth(0) : ''
         div.scrollLeft = width;
-        console.log(offsetWidth, width)
         return;
     };
 
@@ -108,14 +108,6 @@ function TopSeller({ platform, data }) {
                             >
                                 <span>Comprar en {platform}</span>
                             </a>
-                            {platform.split(" ").join("-") ===
-                            "instant-gaming" ? (
-                                <div className="message">
-                                    El precio es en EUROS
-                                </div>
-                            ) : (
-                                ""
-                            )}
                         </div>
                     </div>
                 ))}

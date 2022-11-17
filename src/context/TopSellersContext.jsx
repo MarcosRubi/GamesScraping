@@ -8,19 +8,19 @@ export function TopSellersContextProvider(props) {
     const [instantGaming, setInstantGaming] = useState(null);
 
     async function getSteam() {
-        const response = await fetch(`http://localhost:3000/top-sellers-steam`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/top-sellers-steam`);
         const data = await response.json();
 
         setSteam(data);
     }
     async function getGog() {
-        const response = await fetch(`http://localhost:3000/top-sellers-gog`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/top-sellers-gog`);
         const data = await response.json();
 
         setGog(data);
     }
     async function getInstantGaming() {
-        const response = await fetch(`http://localhost:3000/top-sellers-instant-gaming`);
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/top-sellers-instant-gaming`);
         const data = await response.json();
 
         setInstantGaming(data);
@@ -28,7 +28,7 @@ export function TopSellersContextProvider(props) {
 
     useEffect(() => {
         getSteam();
-        getGog();
+        // getGog();
         getInstantGaming();
     }, []);
 
