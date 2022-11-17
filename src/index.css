@@ -53,12 +53,9 @@ h1{
 h2{
     font-size: 1.5rem;
 }
-h2 span{
-    color: var(--link-color-hover);
-    font-weight: 900;
-    text-shadow: 0px 0px 2px var(--link-color);
+h2::first-letter{
+    text-transform: uppercase;
 }
-
 
 .container{
     width: 90%;
@@ -363,10 +360,7 @@ hr{
 .results::-webkit-scrollbar{
     appearance: none;
 }
-.results.load{
-    min-height: 100px;
-    overflow: hidden;
-}
+
 .results.visible{
     animation: visible 1s linear;
     opacity: 1;
@@ -496,10 +490,7 @@ hr{
     animation-delay: -1s;
 }
 
-.top-sellers-steam,
-.top-sellers-gog,
-.top-sellers-instant-gaming,
-.results-search{
+section.loading{
     margin-bottom: 3rem;
     margin-top: 2rem;
     position: relative;

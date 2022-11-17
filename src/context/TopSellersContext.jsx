@@ -4,7 +4,6 @@ export const TopSellersContext = createContext();
 
 export function TopSellersContextProvider(props) {
     const [steam, setSteam] = useState(null);
-    const [gog, setGog] = useState(null);
     const [instantGaming, setInstantGaming] = useState(null);
 
     async function getSteam() {
@@ -12,12 +11,6 @@ export function TopSellersContextProvider(props) {
         const data = await response.json();
 
         setSteam(data);
-    }
-    async function getGog() {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/top-sellers-gog`);
-        const data = await response.json();
-
-        setGog(data);
     }
     async function getInstantGaming() {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/top-sellers-instant-gaming`);
@@ -28,13 +21,12 @@ export function TopSellersContextProvider(props) {
 
     useEffect(() => {
         getSteam();
-        // getGog();
         getInstantGaming();
     }, []);
 
     return (
         <TopSellersContext.Provider
-            value={{steam, gog, instantGaming}}
+            value={{steam, instantGaming}}
         >
             {props.children}
         </TopSellersContext.Provider>

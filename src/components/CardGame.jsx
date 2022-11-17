@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import ShowLoading from "../ShowLoading";
+import ShowLoading from "./ShowLoading";
 
-function TopSeller({ platform, data }) {
+function CardGame({ title, data, platform, classList }) {
     const DivResultsRef = useRef(null);
     const [DivResults, setDivResults] = useState(null);
     const [entryObserver, setEntryObserver] = useState(false);
@@ -28,46 +28,38 @@ function TopSeller({ platform, data }) {
     if (data === null) {
         return (
             <section
-                className={`top-sellers-${platform
-                    .split(" ")
-                    .join("-")} container ${DivResults}`}
+                className={`${classList} container loading ${DivResults}`}
                 ref={DivResultsRef}
             >
                 <ShowLoading
-                    message={`Obteniendo los más vendidos de ${platform}...`}
+                    message={`Obteniendo ${title}...`}
                 />
             </section>
         );
     }
 
     const handleOnClick = () => {
-        let offsetWidth = (data.length * 280 + (30*data.length)) - document.querySelector('.top-sellers-steam').offsetWidth
-        let div = document.querySelector(`.top-sellers-${platform.split(" ").join("-")} .results`)
+        let div = document.querySelector(`.${classList}`)
+        let offsetWidth = (data.length * 280 + (30*data.length)) - div.offsetWidth
 
         width >= offsetWidth ? setWidth(0) : setWidth(width + 280 + 30);
         width+280+30 > offsetWidth ? setWidth(0) : ''
-        div.scrollLeft = width;
-        return;
+        document.querySelector(`.${classList} .results`).scrollLeft = width;
     };
 
     return (
         <section
-            className={`top-sellers-${platform.split(" ").join("-")} container`}
+            className={`${classList} container`}
             ref={DivResultsRef}
         >
             <div className="d-flex align-center jc-between">
-                <h2>
-                    Los juegos más vendidos de <span>{platform}</span>:
-                </h2>
+                <h2> {title} </h2>
+                {(data.length * 280 + (30*data.length)) - document.querySelector(`.${classList}`).offsetWidth > 0 
+                ?
                 <div className="controls">
-                    <button className="btn btn-outline"
-                        onClick={() => {
-                            handleOnClick("left");
-                        }}
-                    >
-                        <span> Ver más</span>
-                    </button>
+                    <button className="btn btn-outline" onClick={() => {handleOnClick(); }} > <span> Ver más</span> </button>
                 </div>
+                : ''}
             </div>
             <div className={`results ${DivResults}`}>
                 {data.map((game, index) => (
@@ -84,7 +76,7 @@ function TopSeller({ platform, data }) {
                         <div className="cardGameHeader">
                             <img
                                 src={game.imgUrl}
-                                alt={`Imagen juego ${game.name} de ${platform}`}
+                                alt={`Imagen del juego ${game.name}`}
                             />
                         </div>
                         <div className="cardGameContent">
@@ -116,4 +108,4 @@ function TopSeller({ platform, data }) {
     );
 }
 
-export default TopSeller;
+export default CardGame;
