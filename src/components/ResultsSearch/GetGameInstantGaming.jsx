@@ -35,7 +35,6 @@ function GetGameInstantGaming({ data }) {
                     <span className="price-now">{data[0].instantGaming[id].price[0].now}</span>
                 </div>
                     <a href={data[0].instantGaming[id].url} target="_blank" className="btn btn-primary"><span className="fz-small">Comprar en Instant Gaming</span></a>
-                    <div className="message">El precio es en EUROS</div>
             </div>
         </div>
     );
