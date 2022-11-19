@@ -11,6 +11,8 @@ import GamesResultSearchContainer from "./components/ResultsSearch/GamesResultSe
 
 import { TopSellersContextProvider } from "./context/TopSellersContext";
 import { TopOffersContextProvider } from "./context/TopOffersContext";
+import { NewReleasesContextProvider } from "./context/NewReleasesContext";
+import NewReleasesContainer from "./components/NewReleasesContainer";
 
 function App() {
     const { viewSearch } = useContext(MainContext);
@@ -24,6 +26,9 @@ function App() {
             <TopOffersContextProvider>
                 {viewSearch ? <TopOffersContainer/> : ""}
             </TopOffersContextProvider>
+            <NewReleasesContextProvider>
+                {viewSearch ? <NewReleasesContainer/> : ""}
+            </NewReleasesContextProvider>
             <ModalLegal />
         </>
     );
