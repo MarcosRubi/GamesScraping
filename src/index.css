@@ -410,6 +410,11 @@ hr{
 .cardGameHeader img{
     width: 100%;
     object-fit: contain;
+}
+.cardGameHeader p{
+    padding: 1.5rem 0;
+    text-shadow: 1px 0px 1px var(--black);
+    background-color: var(--black);
 } 
 .cardGameContent h3{
     margin-top: 1rem;

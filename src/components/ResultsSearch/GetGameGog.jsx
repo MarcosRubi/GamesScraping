@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GetNotFound from "./GetNotFound";
-import { AiOutlineReload } from "react-icons/ai";
+import { GiCycle } from "react-icons/gi";
 
 
 function GetGameGog({ data }) {
@@ -16,7 +16,7 @@ function GetGameGog({ data }) {
     return (
         <div className="cardGame">
             {data[0].gog.length > 1 
-            ? <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><AiOutlineReload/></button> 
+            ? <button className="changeResult" title="Cambiar resultado" onClick={()=>{handleOnClick()}}><GiCycle/></button> 
             : ''
             }
             

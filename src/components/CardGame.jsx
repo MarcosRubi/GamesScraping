@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import ShowLoading from "./ShowLoading";
+import { CiImageOff } from "react-icons/ci";
 
 function CardGame({ title, data, platform, classList }) {
     const DivResultsRef = useRef(null);
@@ -72,10 +73,15 @@ function CardGame({ title, data, platform, classList }) {
                             </div>
                         : ("")}
                         <div className="cardGameHeader">
-                            <img
-                                src={game.imgUrl}
-                                alt={`Imagen del juego ${game.name}`}
-                            />
+                            {game.imgUrl ?
+                                <img
+                                    src={game.imgUrl}
+                                    alt={`Imagen del juego ${game.name}`}
+                                />
+                            : 
+                                <p className="d-flex align-center jc-center">Imagen no disponible <CiImageOff/></p> 
+                            }
+                            
                         </div>
                         <div className="cardGameContent">
                             <h3>{game.name}</h3>
