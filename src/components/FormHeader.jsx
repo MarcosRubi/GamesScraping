@@ -29,6 +29,7 @@ function FormHeader() {
         e.preventDefault();
         getGames();
         setShowLoading(true);
+        document.getElementById('txtSearch').value = ''
     }
     return (
         <form
@@ -50,7 +51,6 @@ function FormHeader() {
                         onChange={(e) => {
                             setNameGame(e.target.value);
                         }}
-                        value={nameGame === null ? "" : nameGame}
                     />
                     <label htmlFor="txtSearch">Nombre del juego</label>
                 </div>

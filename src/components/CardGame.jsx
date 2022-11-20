@@ -96,7 +96,7 @@ function CardGame({ title, data, platform, classList }) {
                                     {game.price[0].now}
                                 </span>
                             </div>
-                            <a href={game.url} target="_blank" className="btn btn-primary"> <span>Comprar en {platform}</span> </a>
+                            <a href={game.url} target="_blank" className="btn btn-primary"> <span>Ir a {platform}</span> </a>
                         </div>
                     </div>
                 ))}
