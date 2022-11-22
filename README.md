@@ -1,9 +1,38 @@
-## ¿Qué es GamesScraping? 
+# ¿Qué es Games Scraping?
 
-> ***Proyecto en desarrollo***
+**Games Scraping** tiene la finalidad de realizar el monitoreo de precios en las tiendas de videojuego online.
+**Scraping** es el proceso de recopilar información pública de diferentes páginas web.
 
-**Scraping** es el proceso de recopilar información pública de diferentes páginas web con la finalidad de, por ejemplo, monitoreo de precios, de noticias, generación de clientes potenciales, investigación de mercado, entre muchos otros.
+## Tabla de contenidos
 
-Este proyecto tiene la funcionalidad de utilizar el método de Web Scraping para ayudarte a buscar la plataforma en donde más barato puedes adquirir el juego que desees.
+- [Visión general](#visión-general)
+  - [Capturas](#capturas)
+  - [Enlaces](#enlaces)
+- [Mi proceso](#mi-proceso)
+  - [Tecnologías usadas](#tecnologías-usadas)
+- [Autor](#autor)
 
-Solo debes insertar el nombre del juego y nos encargaremos de listarte el precio que tiene en diferentes tiendas online que sean confiables de poder comprar, tú podrás filtrar las plataformas en donde quieres que busquemos el juego.
+## Visión general
+## Capturas
+
+Página inicial
+![](screenshot/inicio.png)
+Resultados de búsqueda
+![](screenshot/busqueda.png)
+Secciones adicionales
+![](screenshot/homepage.png)
+
+### Enlaces
+- Solución URL: [GitHub](https://github.com/MarcosRubi/GamesScraping)
+- Sitio Web URL: [GitHub Pages](https://marcosrubi.github.io/GamesScraping)
+
+## Mi proceso
+
+### Tecnologías usadas
+- HTML5 Semántico 
+- CSS 
+- [React](https://reactjs.org/) - JS library
+- [API](https://github.com/MarcosRubi/API-gaming-scraping) - Usando Node.js, express, puppeteer y jsdom.
+
+## Autor
+- Portafolio - [Marcos Rubí](https://mrubi.vercel.app/)
