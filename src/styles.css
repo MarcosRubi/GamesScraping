@@ -26,6 +26,9 @@
   --gs-overlay: rgba(10, 10, 14, 0.55);
   --gs-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   --gs-skeleton-sheen: rgba(0, 0, 0, 0.05);
+  --gs-scroll-thumb: rgba(0, 0, 0, 0.18);
+  --gs-scroll-thumb-hover: rgba(0, 0, 0, 0.32);
+  color-scheme: light;
 }
 
 [data-theme="dark"] {
@@ -42,6 +45,9 @@
   --gs-overlay: rgba(0, 0, 0, 0.7);
   --gs-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   --gs-skeleton-sheen: rgba(255, 255, 255, 0.05);
+  --gs-scroll-thumb: rgba(255, 255, 255, 0.16);
+  --gs-scroll-thumb-hover: rgba(255, 255, 255, 0.3);
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -104,6 +110,16 @@
   }
   button:not(:disabled) {
     cursor: pointer;
+  }
+  /* Scrollbars internos (sidebar de filtros, drawers, listas): finos y
+     con pista transparente para fundirse con la superficie. La barra
+     principal de la página queda nativa, pero sigue el tema vía color-scheme. */
+  body * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gs-scroll-thumb) transparent;
+  }
+  body *:hover {
+    scrollbar-color: var(--gs-scroll-thumb-hover) transparent;
   }
   :focus-visible {
     outline: 2px solid var(--gs-accent);

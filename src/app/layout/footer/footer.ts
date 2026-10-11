@@ -29,7 +29,10 @@ const STORE_HOMEPAGES: Record<string, string> = {
             <app-store-tag [store]="key" />
           }
         </div>
-        <app-currency-switch />
+        <div class="flex items-center gap-3">
+          <span class="text-[14px] font-medium">Ver precios en:</span>
+          <app-currency-switch />
+        </div>
       </div>
     </div>
 
