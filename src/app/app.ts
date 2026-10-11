@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { scrollTopOnPageChange } from './core/browser/scroll-on-page-change';
 import { UiStore } from './core/state/ui.store';
 import { Footer } from './layout/footer/footer';
 import { Header } from './layout/header/header';
@@ -28,4 +29,8 @@ import { TrailerPlayer } from './shared/ui/trailer-player';
 })
 export class App {
   protected readonly ui = inject(UiStore);
+
+  constructor() {
+    scrollTopOnPageChange();
+  }
 }

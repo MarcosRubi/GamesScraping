@@ -11,9 +11,8 @@ import { Icon } from '../../shared/ui/icon/icon';
 import { FiltersDrawer } from './components/filters-drawer';
 import { GenreCarousel } from './components/genre-carousel';
 import { Pagination } from './components/pagination';
-import type { PriceRangeValue } from './components/price-range';
 import { ShopListItem } from './components/shop-list-item';
-import { ShopSidebar, type FacetCounts } from './components/shop-sidebar';
+import { ShopSidebar, type FilterDraft } from './components/shop-sidebar';
 import { ShopToolbar } from './components/shop-toolbar';
 import {
   DEFAULT_FILTERS,
@@ -26,7 +25,7 @@ import {
   type SortKey,
   type ViewMode,
 } from './shop-filters.model';
-import { facetCounts, matches, sortEntries } from './shop-filtering';
+import { matches, sortEntries } from './shop-filtering';
 
 type MultiFacet = 'lists' | 'stores' | 'genres' | 'features';
 
@@ -89,17 +88,6 @@ export class ShopPage {
     return { from, to: Math.min(this.page() * perPage, this.total()) };
   });
 
-  protected readonly counts = computed<FacetCounts>(() => {
-    const entries = this.catalog.entries() ?? [];
-    const f = this.filters();
-    return {
-      lists: facetCounts(entries, f, 'lists'),
-      stores: facetCounts(entries, f, 'stores'),
-      genres: facetCounts(entries, f, 'genres'),
-      features: facetCounts(entries, f, 'features'),
-    };
-  });
-
   // Géneros del catálogo, los más comunes primero.
   protected readonly genreOptions = computed(() => {
     const counts = new Map<string, number>();
@@ -146,8 +134,10 @@ export class ShopPage {
     this.toggle({ facet: 'genres', key: label });
   }
 
-  protected setPrice(range: PriceRangeValue): void {
-    this.update(range);
+  // "Aplicar filtros" del panel: todo lo elegido en una sola navegación.
+  protected applyFilters(draft: FilterDraft): void {
+    this.filtersOpen.set(false);
+    this.update(draft);
   }
 
   protected setSort(sort: SortKey): void {
@@ -167,6 +157,7 @@ export class ShopPage {
   }
 
   protected clearFilters(): void {
+    this.filtersOpen.set(false);
     const { sort, perPage, view } = this.filters();
     this.update({ ...DEFAULT_FILTERS, sort, perPage, view });
   }
@@ -178,11 +169,14 @@ export class ShopPage {
       .then(() => scrollToId('resultados'));
   }
 
-  // Cambios de filtro: vuelven a la página 1 y reemplazan la entrada del
-  // historial, para que "atrás" no recorra cada checkbox.
+  // Cambios de filtro: vuelven a la página 1, reemplazan la entrada del
+  // historial (para que "atrás" no recorra cada checkbox) y dejan la vista
+  // en los resultados, debajo del carrusel de géneros.
   private update(partial: Partial<ShopFilters>, resetPage = true): void {
     const next: ShopFilters = { ...this.filters(), ...partial, ...(resetPage ? { page: 1 } : {}) };
-    void this.router.navigate([], { relativeTo: this.route, queryParams: toQueryParams(next), replaceUrl: true });
+    void this.router
+      .navigate([], { relativeTo: this.route, queryParams: toQueryParams(next), replaceUrl: true })
+      .then(() => scrollToId('resultados'));
   }
 
   protected readonly activeFilterCount = computed(() => this.chips().length);

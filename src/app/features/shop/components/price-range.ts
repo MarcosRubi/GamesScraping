@@ -1,14 +1,13 @@
-import { Component, computed, input, linkedSignal, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 
 export interface PriceRangeValue {
   min: number | null;
   max: number | null;
 }
 
-// Slider de precio con dos manijas. Mientras se arrastra solo cambia el
-// borrador local (linkedSignal: se reinicia si cambian los filtros
-// aplicados o el tope); el filtro se aplica con "Filtrar", como en el diseño,
-// para no recalcular la grilla en cada píxel.
+// Slider de precio con dos manijas (controlado): muestra `value` y emite
+// cada movimiento; quien lo usa decide cuándo aplicar. null = sin límite
+// (manija en el extremo).
 @Component({
   selector: 'app-price-range',
   styles: `
@@ -50,7 +49,7 @@ export interface PriceRangeValue {
         [min]="0"
         [max]="bound()"
         [step]="1"
-        [value]="draftMin()"
+        [value]="low_()"
         (input)="setMin(low.valueAsNumber)"
       />
       <input
@@ -61,45 +60,35 @@ export interface PriceRangeValue {
         [min]="0"
         [max]="bound()"
         [step]="1"
-        [value]="draftMax()"
+        [value]="high_()"
         (input)="setMax(high.valueAsNumber)"
       />
     </div>
-    <div class="mt-4 flex items-center justify-between gap-3">
-      <p class="text-[13px] text-ink-2">
-        Precio: <span class="font-medium text-ink">{{ symbol() }}{{ draftMin() }} — {{ symbol() }}{{ draftMax() }}</span>
-      </p>
-      <button type="button" class="rounded-full bg-accent/10 px-4 py-1.5 text-[12px] font-medium text-accent transition hover:bg-accent hover:text-white" (click)="submit()">
-        Filtrar
-      </button>
-    </div>
+    <p class="mt-4 text-[13px] text-ink-2">
+      Precio: <span class="font-medium text-ink">{{ symbol() }}{{ low_() }} — {{ symbol() }}{{ high_() }}</span>
+    </p>
   `,
 })
 export class PriceRange {
   readonly value = input.required<PriceRangeValue>();
   readonly bound = input.required<number>();
   readonly symbol = input('US$');
-  readonly apply = output<PriceRangeValue>();
+  readonly change = output<PriceRangeValue>();
 
-  protected readonly draftMin = linkedSignal(() => Math.min(this.value().min ?? 0, this.bound()));
-  protected readonly draftMax = linkedSignal(() => Math.min(this.value().max ?? this.bound(), this.bound()));
-
-  protected readonly lowPct = computed(() => (this.draftMin() / this.bound()) * 100);
-  protected readonly highPct = computed(() => (this.draftMax() / this.bound()) * 100);
+  protected readonly low_ = computed(() => Math.min(this.value().min ?? 0, this.bound()));
+  protected readonly high_ = computed(() => Math.min(this.value().max ?? this.bound(), this.bound()));
+  protected readonly lowPct = computed(() => (this.low_() / this.bound()) * 100);
+  protected readonly highPct = computed(() => (this.high_() / this.bound()) * 100);
 
   protected setMin(v: number): void {
-    this.draftMin.set(Math.min(v, this.draftMax()));
+    this.emit(Math.min(v, this.high_()), this.high_());
   }
 
   protected setMax(v: number): void {
-    this.draftMax.set(Math.max(v, this.draftMin()));
+    this.emit(this.low_(), Math.max(v, this.low_()));
   }
 
-  // Los extremos del slider equivalen a "sin límite".
-  protected submit(): void {
-    this.apply.emit({
-      min: this.draftMin() > 0 ? this.draftMin() : null,
-      max: this.draftMax() < this.bound() ? this.draftMax() : null,
-    });
+  private emit(low: number, high: number): void {
+    this.change.emit({ min: low > 0 ? low : null, max: high < this.bound() ? high : null });
   }
 }

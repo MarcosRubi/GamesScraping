@@ -16,10 +16,8 @@ import { Icon } from '../../../shared/ui/icon/icon';
           <app-icon name="close" />
         </button>
       </div>
-      <div class="flex-1 overflow-y-auto p-5"><ng-content /></div>
-      <div class="border-t border-hairline p-4">
-        <button type="button" class="btn-primary w-full" (click)="closed.emit()">Ver resultados</button>
-      </div>
+      <!-- Los botones Aplicar / Limpiar vienen dentro del panel de filtros -->
+      <div class="flex-1 overflow-y-auto bg-surface p-6"><ng-content /></div>
     </aside>
   `,
 })

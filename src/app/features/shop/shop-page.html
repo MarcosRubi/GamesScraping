@@ -17,7 +17,7 @@
 
 <div class="page mt-10 grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
   <!-- Filtros: columna en escritorio -->
-  <aside class="hidden self-start rounded-card bg-surface p-6 lg:block">
+  <aside class="sticky top-20 hidden max-h-[calc(100vh-6rem)] self-start overflow-y-auto rounded-card bg-surface p-6 lg:block">
     <ng-container *ngTemplateOutlet="sidebar" />
   </aside>
 
@@ -100,11 +100,11 @@
 <ng-template #sidebar>
   <app-shop-sidebar
     [filters]="filters()"
-    [counts]="counts()"
+    [entries]="catalog.entries() ?? []"
     [genreOptions]="genreOptions()"
     [maxPrice]="catalog.maxPrice()"
     [currencySymbol]="currencySymbol()"
-    (toggle)="toggle($event)"
-    (price)="setPrice($event)"
+    (apply)="applyFilters($event)"
+    (clear)="clearFilters()"
   />
 </ng-template>
