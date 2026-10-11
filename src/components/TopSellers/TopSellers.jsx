@@ -1,11 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { MainContext } from "../../context/MainContext";
 import ShowLoading from "../ShowLoading";
+import GameCard, { STORES } from "../GameCard";
+import Carousel from "../Carousel";
+import { cleanGameName } from "../../utils/compareSearch";
 
-function TopSeller({ platform, data }) {
-    const DivResultsRef = useRef(null);
-    const [DivResults, setDivResults] = useState(null);
+function TopSeller({ storeKey, data }) {
+    const { setNameGame, getGames, setShowLoading } = useContext(MainContext);
+    const sectionRef = useRef(null);
+    const [visible, setVisible] = useState(null);
     const [entryObserver, setEntryObserver] = useState(false);
-    const [width, setWidth] = useState(310);
+    const label = STORES[storeKey].label;
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -13,7 +18,7 @@ function TopSeller({ platform, data }) {
                 const entry = entries[0];
                 setEntryObserver(entry.isIntersecting);
                 if (entryObserver) {
-                    setDivResults("visible");
+                    setVisible("visible");
                 }
             },
             {
@@ -22,104 +27,33 @@ function TopSeller({ platform, data }) {
                 threshold: 0.1,
             }
         );
-        observer.observe(DivResultsRef.current);
+        observer.observe(sectionRef.current);
     }, [entryObserver]);
 
     if (data === null) {
         return (
-            <section
-                className={`top-sellers-${platform
-                    .split(" ")
-                    .join("-")} container ${DivResults}`}
-                ref={DivResultsRef}
-            >
-                <ShowLoading
-                    message={`Obteniendo los más vendidos de ${platform}...`}
-                />
+            <section className={`store-section container ${visible}`} ref={sectionRef}>
+                <ShowLoading message={`Obteniendo los más vendidos de ${label}...`} />
             </section>
         );
     }
 
-    const handleOnClick = () => {
-        let offsetWidth = (data.length * 280 + (30*data.length)) / 2
-        let div = document.querySelector(`.top-sellers-${platform.split(" ").join("-")} .results`)
-
-        width >= offsetWidth ? setWidth(0) : setWidth(width + 280 + 30);
-        div.scrollLeft = width;
-        console.log(offsetWidth, width)
-        return;
-    };
+    // Busca este mismo juego en todas las tiendas.
+    function compare(name) {
+        const cleanName = cleanGameName(name);
+        setNameGame(cleanName);
+        setShowLoading(true);
+        getGames(cleanName);
+    }
 
     return (
-        <section
-            className={`top-sellers-${platform.split(" ").join("-")} container`}
-            ref={DivResultsRef}
-        >
-            <div className="d-flex align-center jc-between">
-                <h2>
-                    Los juegos más vendidos de <span>{platform}</span>:
-                </h2>
-                <div className="controls">
-                    <button className="btn btn-outline"
-                        onClick={() => {
-                            handleOnClick("left");
-                        }}
-                    >
-                        <span> Ver más</span>
-                    </button>
-                </div>
-            </div>
-            <div className={`results ${DivResults}`}>
+        <section className="store-section container" ref={sectionRef}>
+            <h2 className="section-title">Los más vendidos de {label}</h2>
+            <Carousel visibleClass={visible}>
                 {data.map((game, index) => (
-                    <div className="cardGame" key={index}>
-                        {game.discount ? (
-                            <div className="cardGame--discount">
-                                <span className="discount">
-                                    {game.discount}
-                                </span>
-                            </div>
-                        ) : (
-                            ""
-                        )}
-                        <div className="cardGameHeader">
-                            <img
-                                src={game.imgUrl}
-                                alt={`Imagen juego ${game.name} de ${platform}`}
-                            />
-                        </div>
-                        <div className="cardGameContent">
-                            <h3>{game.name}</h3>
-                            <div className="cardGame--price">
-                                {game.price.length > 1 ? (
-                                    <span className="price-old">
-                                        {game.price[1].old}
-                                    </span>
-                                ) : (
-                                    ""
-                                )}
-                                <span className="price-now">
-                                    {game.price[0].now}
-                                </span>
-                            </div>
-                            <a
-                                href={game.url}
-                                target="_blank"
-                                className="btn btn-primary"
-                            >
-                                <span>Comprar en {platform}</span>
-                            </a>
-                            {platform.split(" ").join("-") ===
-                            "instant-gaming" ? (
-                                <div className="message">
-                                    El precio es en EUROS
-                                </div>
-                            ) : (
-                                ""
-                            )}
-                        </div>
-                    </div>
+                    <GameCard key={index} game={game} store={storeKey} onCompare={compare} />
                 ))}
-            </div>
+            </Carousel>
         </section>
     );
 }

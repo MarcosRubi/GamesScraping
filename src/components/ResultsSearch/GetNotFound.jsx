@@ -1,5 +1,15 @@
-function GetNotFound({platform}) {
-    return <div className="cardGame d-flex jc-center flex-column"><h3>Juego no encontrado en {platform}</h3> </div>;
+import { AiOutlineFileSearch } from "react-icons/ai";
+
+function GetNotFound({ platform }) {
+    return (
+        <div className="cardGame cardGame--empty">
+            <AiOutlineFileSearch className="cardGame--empty__icon" />
+            <h3>No disponible</h3>
+            <p>
+                {platform} no vende este juego
+            </p>
+        </div>
+    );
 }
 
 export default GetNotFound;

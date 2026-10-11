@@ -1,23 +1,26 @@
 import { useContext } from "react";
-import Banner from "./components/Banner";
-import GamesResultSearchContainer from "./components/ResultsSearch/GamesResultSearchContainer";
 import Header from "./components/Header";
+import GamesResultSearchContainer from "./components/ResultsSearch/GamesResultSearchContainer";
+import HomeSectionsContainer from "./components/Home/HomeSectionsContainer";
+import TopSellersContainer from "./components/TopSellers/TopSellersContainer";
+import FeaturedCarousel from "./components/FeaturedCarousel/FeaturedCarousel";
 import ModalLegal from "./components/ModalLegal";
 import { MainContext } from "./context/MainContext";
-import TopSellersContainer from "./components/TopSellers/TopSellersContainer";
-import { TopSellersContextProvider } from "./context/TopSellersContext";
+import { HomeContextProvider } from "./context/HomeContext";
 
 function App() {
-    const { viewSearch } = useContext(MainContext);
+    const { gamesResult, showLoading } = useContext(MainContext);
+    const hasSearched = showLoading || gamesResult.length > 0;
+
     return (
-        <>
+        <HomeContextProvider>
             <Header />
-            {viewSearch ? <GamesResultSearchContainer /> : <Banner />}
-            <TopSellersContextProvider>
-                {viewSearch ? <TopSellersContainer /> : ""}
-            </TopSellersContextProvider>
+            <FeaturedCarousel />
+            {hasSearched ? <GamesResultSearchContainer /> : ""}
+            <HomeSectionsContainer />
+            <TopSellersContainer />
             <ModalLegal />
-        </>
+        </HomeContextProvider>
     );
 }
 

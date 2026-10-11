@@ -1,38 +1,52 @@
 import { useContext } from "react";
-import image from "../assets/data-scraping.svg";
 import { MainContext } from "../context/MainContext";
+import { AiOutlineClose } from "react-icons/ai";
 
 function ModalLegal() {
-    const { toggleModal, viewSearch } = useContext(MainContext);
+    const { toggleModal, isModalOpen } = useContext(MainContext);
+
+    if (!isModalOpen) return null;
+
+    const stores = ["Steam", "GOG", "Instant Gaming", "Humble Store", "Fanatical"];
+
     return (
-        viewSearch ? '' :
-        <div id="modal" className="modal container">
-            <div className="d-flex jc-end" onClick={() => { toggleModal(); }} >
-                <button className="close">X</button>
+        <>
+            <div className="modal-backdrop" onClick={toggleModal} />
+            <div id="modal" className="modal">
+                <div className="modal__head">
+                    <h2 className="modal__title">¿Cómo funciona?</h2>
+                    <button
+                        className="close"
+                        onClick={toggleModal}
+                        aria-label="Cerrar"
+                    >
+                        <AiOutlineClose />
+                    </button>
+                </div>
+                <p>
+                    <strong>GameScraping</strong> compara el precio de tu videojuego
+                    favorito entre las principales tiendas digitales:
+                </p>
+                <ul className="modal__stores">
+                    {stores.map((s) => (
+                        <li key={s} className="modal__store">{s}</li>
+                    ))}
+                </ul>
+                <p>
+                    Usamos <strong>Web Scraping</strong>: recopilamos los precios
+                    públicos que cada tienda muestra en su web y te los presentamos
+                    juntos para que sepas dónde conviene comprar. Sin intermediarios,
+                    sin comisiones — el link te lleva directo a la tienda.
+                </p>
+                <h3>¿Es legal el Web Scraping?</h3>
+                <p>
+                    Sí. Mientras los datos sean públicos (como los precios de los
+                    videojuegos), el scraping es totalmente legal. Solo sería
+                    problemático si se accediera a datos privados o protegidos, lo
+                    cual no hacemos. Podés usar este sitio sin problema.
+                </p>
             </div>
-            <hr />
-            <h3 className=" text-center">¿Qué es el Web Scraping?</h3>
-            <p>
-                Es el proceso de recopilar información pública de diferentes
-                páginas web con la finalidad de, por ejemplo, monitoreo de
-                precios, de noticias, generación de clientes potenciales,
-                investigación de mercado, entre muchos otros.
-            </p>
-            <h3 className=" text-center">¿Es legal el Web Scraping?</h3>
-            <p>
-                Para algunos puede parecer un robo el tomar datos de otros
-                sitios web, pero siempre y cuando estos datos sean públicos es
-                totalmente legal el scraping, en dado caso la información no sea
-                pública como datos personales y de propiedad intelectual sería
-                web scraping malicioso. En nuestro caso al ser los precios
-                públicos de los videojuegos en las plataformas, no tenemos
-                ningún problema con la ley, por lo tanto puede usar nuestra web
-                sin problemas.
-            </p>
-            <div className="d-flex jc-center">
-                <img src={image} alt="Image Scraping" />
-            </div>
-        </div>
+        </>
     );
 }
 

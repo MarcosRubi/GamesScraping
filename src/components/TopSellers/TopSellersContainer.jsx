@@ -1,14 +1,16 @@
 import { useContext } from "react";
-import { TopSellersContext } from "../../context/TopSellersContext";
+import { HomeContext } from "../../context/HomeContext";
 import TopSellers from "./TopSellers";
 
 function TopSellersContainer() {
-    const { steam, gog, instantGaming } = useContext(TopSellersContext);
+    const { topSellers } = useContext(HomeContext);
     return (
         <>
-            <TopSellers data={steam} platform={"steam"} />
-            <TopSellers data={instantGaming} platform={"instant gaming"} />
-            <TopSellers data={gog} platform={"gog"} />
+            <TopSellers data={topSellers.steam} storeKey="steam" />
+            <TopSellers data={topSellers.instantGaming} storeKey="instantGaming" />
+            <TopSellers data={topSellers.gog} storeKey="gog" />
+            <TopSellers data={topSellers.humble} storeKey="humble" />
+            <TopSellers data={topSellers.fanatical} storeKey="fanatical" />
         </>
     );
 }
