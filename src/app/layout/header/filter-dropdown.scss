@@ -1,0 +1,177 @@
+:host {
+  position: relative;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid var(--gs-hairline);
+  border-radius: 9999px;
+  background-color: var(--gs-surface);
+  box-shadow: var(--gs-shadow-soft);
+  color: var(--gs-ink);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+
+  &:hover {
+    background-color: var(--gs-canvas);
+  }
+}
+
+:host(.open) .trigger,
+.trigger--active {
+  border-color: var(--gs-accent);
+}
+
+// Con 0 selecciones el badge queda apagado pero ocupa su lugar: el trigger
+// no cambia de ancho al elegir la primera opción.
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9999px;
+  background-color: var(--gs-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.count--zero {
+  background-color: var(--gs-hairline);
+  color: var(--gs-ink-2);
+}
+
+.caret {
+  color: var(--gs-ink-2);
+  font-size: 11px;
+  transition: transform 0.2s;
+
+  :host(.open) & {
+    transform: rotate(180deg);
+  }
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 60;
+  min-width: 250px;
+  max-width: min(440px, 92vw);
+  padding: 10px;
+  border: 1px solid var(--gs-hairline);
+  border-radius: 20px;
+  background-color: var(--gs-surface);
+  box-shadow: var(--gs-shadow-float);
+  animation: dd-in 0.16s ease;
+}
+
+@keyframes dd-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 2px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--gs-ink);
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: var(--gs-canvas);
+  }
+}
+
+.option--all {
+  margin-bottom: 8px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--gs-hairline);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+// Mini checkbox: cuadrado vacío en reposo, check violeta al activar.
+.check {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  border: 1.5px solid var(--gs-ink-2);
+  border-radius: 5px;
+
+  .option--active & {
+    border-color: var(--gs-accent);
+    background-color: var(--gs-accent);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 1.5px;
+      left: 5px;
+      width: 4px;
+      height: 8px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+@media (max-width: 579px) {
+  .trigger {
+    gap: 5px;
+    padding: 8px 11px;
+    font-size: 12px;
+  }
+}
+
+// Dentro del panel móvil del header: mitad de fila cada dropdown, y el menú
+// se ancla al panel (no al trigger) para no cortarse contra el borde.
+@media (max-width: 859px) {
+  :host {
+    position: static;
+    flex: 1 1 50%;
+    min-width: 0;
+  }
+  .trigger {
+    justify-content: center;
+    width: 100%;
+  }
+  .menu {
+    right: 10px;
+    left: 10px;
+    min-width: 0;
+    max-width: none;
+  }
+}

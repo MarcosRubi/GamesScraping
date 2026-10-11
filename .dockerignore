@@ -1,7 +1,9 @@
 node_modules
 dist
+.angular
 .git
-.gitignore
+.agents
+.claude
+screenshot
+*.md
 .env.local
-README.md
-.editorconfig

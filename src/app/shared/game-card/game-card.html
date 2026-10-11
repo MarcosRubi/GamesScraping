@@ -1,0 +1,90 @@
+@let g = game();
+
+<!-- Halo blur que sobresale de la tarjeta (efecto YouTube) -->
+<img class="game-card__halo" [src]="g.imgUrl" alt="" aria-hidden="true" />
+<div class="game-card__media">
+  <img class="game-card__bg" [src]="g.imgUrl" alt="" aria-hidden="true" />
+  <img
+    #fg
+    class="game-card__fg"
+    [class.game-card__fg--contain]="wideImage()"
+    [src]="g.imgUrl"
+    [alt]="'Imagen juego ' + g.name + ' de ' + storeLabel()"
+    loading="lazy"
+    (load)="onImageLoad(fg)"
+  />
+</div>
+
+<ng-content />
+
+@if (g.discount) {
+  <span class="absolute top-2.5 left-2.5 z-12 rounded-full bg-black px-2.5 py-1 text-xs font-medium text-white">
+    {{ g.discount }}
+  </span>
+}
+<app-store-tag class="absolute top-2.5 right-2.5 z-12" [store]="store()" />
+
+<div class="game-card__content">
+  <div class="relative flex flex-wrap items-center gap-1.5">
+    @if (highlight()) {
+      <span class="shrink-0 rounded-full bg-accent px-2 py-0.5 text-[10px] font-medium tracking-[.02em] text-white uppercase">
+        Mejor precio
+      </span>
+    }
+    <h3 class="game-card__title">{{ g.name }}</h3>
+    @switch (note()) {
+      @case ('converted') {
+        <app-info-note label="≈ convertido">
+          Precio original <strong>{{ originalPrice() }}</strong>, al tipo de cambio del día. El cobro final lo
+          define la tienda.
+        </app-info-note>
+      }
+      @case ('regional') {
+        <app-info-note label="Precio regional">
+          El precio puede variar según tu región. Verificalo en la web antes de comprar.
+        </app-info-note>
+      }
+    }
+  </div>
+
+  @if (categories().length > 0) {
+    <div class="flex flex-wrap gap-1">
+      @for (category of categories(); track category) {
+        <span
+          class="inline-flex items-center rounded-full border border-white/20 bg-white/12 px-2 py-1 text-[10px] leading-none font-medium whitespace-nowrap text-white/85 backdrop-blur-sm"
+        >
+          {{ category }}
+        </span>
+      }
+    </div>
+  }
+
+  <div class="flex items-center gap-2">
+    @if (priceOld(); as old) {
+      <span class="text-xs text-white/70 line-through">{{ old }}</span>
+    }
+    @if (free()) {
+      <span class="text-lg font-medium text-white">Gratis</span>
+    } @else if (priceKnown()) {
+      <span class="text-lg font-medium text-white">{{ priceNow() }}</span>
+    } @else {
+      <span class="text-[13px] text-white/75">Precio no encontrado</span>
+    }
+  </div>
+
+  <div class="mt-1.5 flex flex-wrap gap-1.5">
+    <a [href]="g.url" target="_blank" rel="noreferrer" class="game-card__buy">
+      {{ free() ? 'Obtener gratis en ' : 'Comprar en ' }}{{ storeLabel() }}
+    </a>
+    @if (showCompare()) {
+      <button
+        type="button"
+        class="flex-auto self-stretch rounded-full border border-white/35 bg-white/14 px-3.5 py-2.5 text-xs font-medium whitespace-nowrap text-white backdrop-blur-sm transition hover:-translate-y-px hover:border-accent hover:bg-accent"
+        title="Buscar este juego en todas las tiendas"
+        (click)="compare.emit(g.name)"
+      >
+        Comparar precios
+      </button>
+    }
+  </div>
+</div>

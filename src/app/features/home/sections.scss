@@ -1,0 +1,72 @@
+// Estilos compartidos por las secciones de la home y los resultados
+// (portados del CSS original).
+
+:host {
+  display: block;
+}
+
+.section {
+  position: relative;
+  // Aire para el header sticky al hacer scrollIntoView.
+  scroll-margin-top: 84px;
+  min-height: 100px;
+  margin: 72px auto;
+
+  @media (max-width: 768px) {
+    margin: 48px auto;
+  }
+}
+
+.section-title {
+  // Por encima de los halos de las cards y del desvanecido del carrusel.
+  position: relative;
+  z-index: 12;
+  margin-bottom: 16px;
+  font-size: 20px;
+  letter-spacing: -0.05em;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 70px 48px;
+
+  // En grilla la tarjeta ocupa la columna; min-height es el piso cuando la
+  // fila trae poco contenido.
+  > * {
+    min-height: 280px;
+  }
+
+  @media (max-width: 1280px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 56px 36px;
+  }
+  @media (max-width: 1024px) {
+    gap: 40px 26px;
+  }
+  @media (max-width: 720px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 20px;
+  }
+  @media (max-width: 420px) {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+.skeleton-card {
+  aspect-ratio: 20 / 14;
+  border-radius: var(--gs-r-card);
+  box-shadow: var(--gs-shadow-soft);
+}
+
+// En carrusel: ancho fijo y proporción 20/14.
+.carousel-card {
+  flex-shrink: 0;
+  width: 360px;
+  aspect-ratio: 20 / 14;
+
+  @media (max-width: 768px) {
+    width: 290px;
+  }
+}

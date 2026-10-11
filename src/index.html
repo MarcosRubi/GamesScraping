@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>GameScraping — Compara precios de videojuegos</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <!-- Aplica el tema guardado antes de que arranque Angular: evita el
+         flash de tema claro al recargar en modo oscuro. -->
+    <script>
+      try {
+        var t = localStorage.getItem('gs-theme');
+        if (t !== 'light' && t !== 'dark') {
+          t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+    <script defer src="https://analytics.mrubi.dev/script.js" data-website-id="758ff148-4105-4cac-a384-a5f4d2a27adb"></script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

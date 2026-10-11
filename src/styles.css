@@ -1,0 +1,145 @@
+/* ============================================================
+   GameScraping — estilos globales (Tailwind v4)
+   Tokens de diseño como variables CSS (--gs-*) que cambian con el
+   tema; Tailwind los expone como utilidades (bg-canvas, text-ink,
+   shadow-card, rounded-card...). Lo que es muy verboso en utilidades
+   (overlays, halos, animaciones del banner) vive en el .scss de cada
+   componente y usa estas mismas variables.
+   ============================================================ */
+
+@import "tailwindcss";
+
+/* Tema oscuro manual: data-theme="dark" en <html> (no prefers-color-scheme). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --gs-canvas: #f2f4f5;
+  --gs-surface: #ffffff;
+  --gs-ink: #000000;
+  --gs-ink-2: #787574;
+  --gs-hairline: #ebebeb;
+  --gs-accent: #5433eb;
+
+  --gs-shadow-card: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
+  --gs-shadow-float: rgba(0, 0, 0, 0.12) 0px 4px 24px 0px;
+  --gs-shadow-soft: rgba(0, 0, 0, 0.06) 0px 2px 8px 0px;
+  --gs-shadow-accent: rgba(69, 36, 219, 0.34) 0px 4px 24px 0px;
+
+  --gs-skeleton-sheen: rgba(0, 0, 0, 0.05);
+  --gs-r-card: 28px;
+}
+
+[data-theme="dark"] {
+  --gs-canvas: #15151a;
+  --gs-surface: #1f1f26;
+  --gs-ink: #f2f2f2;
+  --gs-ink-2: #9a9a9f;
+  --gs-hairline: #3a3a42;
+  --gs-accent: #6a4aff;
+
+  --gs-shadow-card: rgba(0, 0, 0, 0.5) 0px 4px 6px -1px, rgba(0, 0, 0, 0.5) 0px 2px 4px -2px;
+  --gs-shadow-float: rgba(0, 0, 0, 0.65) 0px 4px 24px 0px;
+  --gs-shadow-soft: rgba(0, 0, 0, 0.4) 0px 2px 8px 0px;
+  --gs-shadow-accent: rgba(106, 74, 255, 0.4) 0px 4px 24px 0px;
+
+  --gs-skeleton-sheen: rgba(255, 255, 255, 0.06);
+}
+
+/* `inline`: las utilidades usan var(--gs-*) directamente, así reaccionan
+   al cambio de tema sin recompilar nada. */
+@theme inline {
+  --color-canvas: var(--gs-canvas);
+  --color-surface: var(--gs-surface);
+  --color-ink: var(--gs-ink);
+  --color-ink-2: var(--gs-ink-2);
+  --color-hairline: var(--gs-hairline);
+  --color-accent: var(--gs-accent);
+
+  --shadow-card: var(--gs-shadow-card);
+  --shadow-float: var(--gs-shadow-float);
+  --shadow-soft: var(--gs-shadow-soft);
+  --shadow-accent: var(--gs-shadow-accent);
+}
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --color-steam: #1b2838;
+  --color-gog: #86328a;
+  --color-instant-gaming: #ff5400;
+  --color-humble: #cb272c;
+  --color-fanatical: #265dd8;
+
+  --radius-card: 28px;
+
+  --tracking-tight: -0.05em;
+  --tracking-body: -0.031em;
+
+  /* Breakpoints del diseño original (además de los de Tailwind). */
+  --breakpoint-sm: 36.25rem; /* 580px */
+  --breakpoint-nav: 53.75rem; /* 860px: header compacto por debajo */
+  --breakpoint-banner: 75rem; /* 1200px: banner de escritorio */
+
+  --animate-dd-in: dd-in 0.16s ease;
+
+  @keyframes dd-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Nunca scroll horizontal: clip recorta sin crear scroll container, así
+       el header sticky sigue funcionando (hidden es el fallback). */
+    overflow-x: hidden;
+    overflow-x: clip;
+  }
+  body {
+    @apply bg-canvas font-sans text-base text-ink;
+    letter-spacing: var(--tracking-body);
+    line-height: 1.33;
+  }
+  h1,
+  h2,
+  h3 {
+    font-weight: 500;
+  }
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Contenedor de página: ancho máximo y márgenes del diseño. */
+@utility page {
+  width: 95%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+
+/* Placeholder con shimmer mientras cargan los datos. */
+@utility skeleton {
+  background-color: var(--gs-surface);
+  background-image: linear-gradient(100deg, transparent 35%, var(--gs-skeleton-sheen) 50%, transparent 65%);
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -120% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

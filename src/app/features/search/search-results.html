@@ -1,0 +1,58 @@
+@if (search.searching()) {
+  <!-- Progreso por tienda: spinner mientras busca, check al responder. -->
+  <section class="section page">
+    <div class="search-loading">
+      <p class="search-loading__title">
+        Buscando <strong>{{ search.searchedTerm() }}</strong>
+        {{ excluded().length > 0 ? 'en las tiendas de tu filtro...' : 'en las tiendas...' }}
+      </p>
+      <div class="search-loading__stores">
+        @for (item of search.progress(); track item.key) {
+          <span class="search-loading__store" [class.search-loading__store--done]="item.done">
+            @if (item.done) {
+              <app-icon name="check" class="search-loading__check" />
+            } @else {
+              <span class="search-loading__spinner" aria-hidden="true"></span>
+            }
+            {{ labels[item.key].label }}
+          </span>
+        }
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="section page">
+    <h2 class="section-title">Resultados de búsqueda</h2>
+
+    @if (missing().length > 0) {
+      <p class="missing-stores">
+        <span>No disponible en:</span>
+        @for (key of missing(); track key) {
+          <span class="missing-stores__tag">{{ labels[key].label }}</span>
+        }
+      </p>
+    }
+    @if (excluded().length > 0) {
+      <p class="missing-stores">
+        <span>Sin buscar (fuera de tu filtro):</span>
+        @for (key of excluded(); track key) {
+          <span class="missing-stores__tag">{{ labels[key].label }}</span>
+        }
+      </p>
+    }
+
+    @if (available().length > 0) {
+      <div class="game-grid">
+        @for (result of available(); track result.key) {
+          <app-store-result-card [games]="result.games" [store]="result.key" [highlight]="bestStore() === result.key" />
+        }
+      </div>
+    } @else {
+      <div class="empty-result">
+        <app-icon name="search" class="text-[40px] opacity-50" />
+        <h3>No encontramos «{{ search.searchedTerm() }}»</h3>
+        <p>Ninguna de las tiendas buscadas lo vende. Probá con otro nombre.</p>
+      </div>
+    }
+  </section>
+}

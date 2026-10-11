@@ -1,0 +1,42 @@
+// La tarjeta es el item de la grilla: se estira a la altura de la fila.
+:host {
+  display: flex;
+}
+
+.result-nav {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  // Sobre los chips de la card pero debajo del header sticky.
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px 6px;
+  border-radius: 9999px;
+  background-color: var(--gs-surface);
+  box-shadow: var(--gs-shadow-float);
+  color: var(--gs-ink);
+  transform: translateX(-50%);
+}
+
+.result-nav__arrow {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  border: none;
+  background: transparent;
+  color: var(--gs-ink);
+  font-size: 13px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.result-nav__count {
+  font-size: 11px;
+  font-weight: 500;
+}
