@@ -1,5 +1,5 @@
 <header class="sticky top-0 z-50 border-b border-hairline bg-header/95 backdrop-blur">
-  <div class="page relative flex h-16 items-center gap-6">
+  <div class="page relative flex h-16 items-center gap-2 sm:gap-6">
     <button
       type="button"
       class="-ml-1 rounded-full p-2 text-xl text-ink lg:hidden"
@@ -9,7 +9,7 @@
       <app-icon name="menu" />
     </button>
 
-    <a href="/" class="flex items-center gap-2 text-[19px] font-semibold tracking-tight text-ink" (click)="goHome($event)">
+    <a href="/" class="flex shrink-0 items-center gap-2 text-[17px] font-semibold sm:text-[19px] tracking-tight text-ink" (click)="goHome($event)">
       <span class="grid size-8 place-items-center rounded-lg bg-accent text-base text-white"><app-icon name="controller" /></span>
       GameScraping<span class="-ml-2 text-accent">.</span>
     </a>
@@ -57,11 +57,11 @@
       </button>
     </nav>
 
-    <div class="ml-auto flex items-center gap-2.5">
+    <div class="ml-auto flex items-center gap-2 sm:gap-2.5">
       <!-- Abre el buscador a pantalla completa -->
       <button
         type="button"
-        class="hidden h-10 w-64 items-center justify-between rounded-full border border-hairline bg-bg pr-1 pl-4 text-[13px] text-ink-3 transition-colors hover:border-accent md:flex xl:w-72"
+        class="hidden h-10 w-64 items-center justify-between rounded-full border border-hairline bg-bg pr-1 pl-4 text-[13px] text-ink-3 transition-colors hover:border-accent md:flex lg:w-48 xl:w-72"
         (click)="ui.searchOpen.set(true)"
       >
         Buscar juegos...

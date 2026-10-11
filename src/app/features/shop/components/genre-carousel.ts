@@ -4,7 +4,8 @@ import { GenreTile } from '../../../shared/ui/genre-tile';
 import { Icon } from '../../../shared/ui/icon/icon';
 
 // Carrusel de géneros del encabezado: scroll nativo con snap (se arrastra
-// con el dedo en móvil) y flechas que avanzan de a una "página". El estado
+// con el dedo en móvil; ahí asoma la siguiente tarjeta) y flechas, visibles
+// en todos los tamaños, que avanzan de a una "página". El estado
 // de las flechas sale del evento scroll del propio contenedor (listener del
 // template: se va con el componente).
 @Component({
@@ -22,7 +23,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
     <div class="relative">
       <button
         type="button"
-        class="absolute top-1/2 -left-3 z-10 hidden size-9 -translate-y-1/2 place-items-center rounded-full bg-bg text-ink shadow-float transition hover:text-accent disabled:opacity-0 sm:grid xl:-left-12 xl:bg-transparent xl:shadow-none"
+        class="absolute top-1/2 -left-2 z-10 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-bg text-ink shadow-float transition hover:text-accent disabled:pointer-events-none disabled:opacity-0 sm:-left-3 sm:size-9 2xl:-left-12 2xl:bg-transparent 2xl:shadow-none"
         aria-label="Géneros anteriores"
         [disabled]="atStart()"
         (click)="scrollPage(-1)"
@@ -33,7 +34,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
       <div #track class="track flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth" (scroll)="updateArrows()">
         @for (genre of genres; track genre.slug) {
           <app-genre-tile
-            class="w-[calc((100%-1rem)/2)] shrink-0 snap-start sm:w-[calc((100%-2rem)/3)] lg:w-[calc((100%-5rem)/6)]"
+            class="w-[calc((100%-1rem)/2.3)] shrink-0 snap-start sm:w-[calc((100%-2rem)/3)] lg:w-[calc((100%-5rem)/6)]"
             [genre]="genre"
             [onSurface]="true"
             [active]="selected().includes(genre.label)"
@@ -44,7 +45,7 @@ import { Icon } from '../../../shared/ui/icon/icon';
 
       <button
         type="button"
-        class="absolute top-1/2 -right-3 z-10 hidden size-9 -translate-y-1/2 place-items-center rounded-full bg-bg text-ink shadow-float transition hover:text-accent disabled:opacity-0 sm:grid xl:-right-12 xl:bg-transparent xl:shadow-none"
+        class="absolute top-1/2 -right-2 z-10 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-bg text-ink shadow-float transition hover:text-accent disabled:pointer-events-none disabled:opacity-0 sm:-right-3 sm:size-9 2xl:-right-12 2xl:bg-transparent 2xl:shadow-none"
         aria-label="Más géneros"
         [disabled]="atEnd()"
         (click)="scrollPage(1)"

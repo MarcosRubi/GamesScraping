@@ -9,7 +9,7 @@ import { Price } from '../../../shared/ui/price';
   selector: 'app-promo-banners',
   imports: [Price],
   template: `
-    <section class="page mt-16 grid gap-5 md:grid-cols-2" aria-label="Ofertas destacadas">
+    <section class="page mt-16 grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2" aria-label="Ofertas destacadas">
       @if (home.promos(); as promos) {
         @for (game of promos; track game.url) {
           <article class="group relative flex min-h-[240px] items-end overflow-hidden rounded-card bg-black sm:min-h-[260px]">

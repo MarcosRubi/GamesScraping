@@ -102,8 +102,9 @@ function sameDraft(a: FilterDraft, b: FilterDraft): boolean {
       </section>
     </div>
 
-    <!-- Acciones: fijas abajo mientras se recorre el panel -->
-    <div class="sticky bottom-0 -mx-6 mt-6 -mb-6 rounded-b-card border-t border-hairline bg-surface px-6 py-4">
+    <!-- Acciones: fijas abajo mientras se recorre el panel. -bottom-6 compensa
+         el p-6 del contenedor con scroll (sticky se mide desde su padding). -->
+    <div class="sticky -bottom-6 z-10 -mx-6 mt-6 -mb-6 border-t lg:rounded-b-card border-hairline bg-surface px-6 py-4">
       <button type="button" class="btn-primary w-full" [disabled]="!dirty()" [class.opacity-50]="!dirty()" (click)="applyDraft()">
         Aplicar filtros · {{ previewTotal() }}
       </button>

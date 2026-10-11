@@ -3,6 +3,7 @@ import type { StoreGame } from '../../core/models/game';
 import { SearchNavigator } from '../../core/state/search-navigator';
 import { StoreTag } from './store-tag';
 import { GameCover } from './game-cover';
+import { Icon } from './icon/icon';
 import { Price } from './price';
 import { Rating } from './rating';
 
@@ -11,36 +12,42 @@ import { Rating } from './rating';
 // "Comparar" (busca el juego en todas las tiendas).
 @Component({
   selector: 'app-game-card',
-  imports: [GameCover, Price, Rating, StoreTag],
+  imports: [GameCover, Icon, Price, Rating, StoreTag],
   host: { class: 'group block min-w-0' },
   template: `
     @let g = game();
     <div class="relative">
       <app-game-cover [game]="g" class="aspect-[3/4] w-full" />
 
-      <div class="absolute top-2.5 left-2.5 flex flex-col items-start gap-1.5">
-        @for (badge of badges(); track badge) {
-          <span class="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-medium text-black shadow-sm">{{ badge }}</span>
+      <!-- Badges y tienda en una misma fila: nunca se pisan -->
+      <div class="absolute inset-x-2.5 top-2.5 flex items-start justify-between gap-1.5">
+        <div class="flex flex-col items-start gap-1.5">
+          @for (badge of badges(); track badge) {
+            <span class="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-medium text-black shadow-sm">{{ badge }}</span>
+          }
+        </div>
+        @if (showStore()) {
+          <app-store-tag class="shrink-0" [store]="g.store" [compact]="true" />
         }
       </div>
-      @if (showStore()) {
-        <app-store-tag class="absolute top-2.5 right-2.5" [store]="g.store" />
-      }
 
       <!-- Acciones al hover (siempre visibles en pantallas táctiles) -->
       <div
         class="absolute inset-x-2.5 bottom-2.5 flex gap-1.5 opacity-100 transition-opacity duration-200 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-100 [@media(hover:hover)]:group-hover:opacity-100"
       >
-        <a [href]="g.url" target="_blank" rel="noreferrer" class="btn-primary flex-1 px-3! py-2! text-xs!">
+        <a [href]="g.url" target="_blank" rel="noreferrer" class="btn-primary min-w-0 flex-1 px-3! py-2! text-xs!">
           {{ buyLabel() }}
         </a>
+        <!-- En tarjetas angostas (móvil, 2 columnas) "Comparar" queda solo con ícono -->
         <button
           type="button"
-          class="rounded-full bg-white/90 px-3 py-2 text-xs font-medium text-black backdrop-blur transition hover:bg-white"
+          class="grid shrink-0 place-items-center rounded-full bg-white/90 px-2.5 py-2 text-xs font-medium text-black backdrop-blur transition hover:bg-white sm:px-3"
           title="Buscar este juego en todas las tiendas"
+          aria-label="Comparar precios"
           (click)="compare()"
         >
-          Comparar
+          <app-icon name="search" class="sm:hidden" />
+          <span class="hidden sm:inline">Comparar</span>
         </button>
       </div>
     </div>

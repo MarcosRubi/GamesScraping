@@ -10,7 +10,7 @@ import { GameRow } from '../../../shared/ui/game-row';
   selector: 'app-list-columns',
   imports: [RouterLink, GameRow],
   template: `
-    <div class="page grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="page grid grid-cols-[minmax(0,1fr)] gap-6 sm:grid-cols-2 lg:grid-cols-4">
       @for (column of columns(); track column.title) {
         <div>
           <div class="mb-4 flex items-center justify-between gap-2">

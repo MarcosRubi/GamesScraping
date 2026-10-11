@@ -19,28 +19,33 @@ const ROTATE_MS = 7000;
   selector: 'app-hero-section',
   imports: [RouterLink, GameRow, Icon, Price, StoreTag],
   template: `
-    <section class="page mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+    <section class="page mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
       @let slides = home.hero();
+      <!-- Se desliza con el dedo (o arrastrando con el mouse); pan-y deja
+           scrollear la página en vertical sobre el banner. -->
       <div
-        class="relative min-h-[380px] overflow-hidden rounded-card bg-black sm:min-h-[440px]"
+        class="relative min-h-[380px] touch-pan-y overflow-hidden rounded-card bg-black select-none sm:min-h-[440px]"
         (mouseenter)="paused.set(true)"
         (mouseleave)="paused.set(false)"
+        (pointerdown)="dragStart($event)"
+        (pointerup)="dragEnd($event)"
+        (pointercancel)="dragOrigin = null"
       >
         @if (active(); as game) {
           <!-- track por índice: el slide se monta de nuevo y entra con fade -->
           @for (i of [index()]; track i) {
             <div class="absolute inset-0 animate-fade-in">
-              <img [src]="image()" alt="" class="absolute inset-0 size-full object-cover" />
+              <img [src]="image()" alt="" draggable="false" class="absolute inset-0 size-full object-cover" />
               <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent"></div>
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent sm:hidden"></div>
 
-              <div class="relative flex h-full max-w-lg flex-col justify-center gap-4 p-6 text-white sm:p-10">
+              <div class="relative flex h-full max-w-lg flex-col justify-center gap-4 p-6 pb-14 text-white sm:p-10">
                 @if (game.details?.logoUrl; as logo) {
-                  <img [src]="logo" [alt]="game.name" class="max-h-24 max-w-[260px] object-contain object-left drop-shadow-lg" />
+                  <img [src]="logo" [alt]="game.name" draggable="false" class="max-h-24 max-w-[260px] object-contain object-left drop-shadow-lg" />
                 } @else {
                   <h2 class="text-3xl font-semibold sm:text-4xl">{{ game.name }}</h2>
                 }
-                <p class="flex items-center gap-2 text-[14px] font-medium">
+                <p class="flex flex-wrap items-center gap-2 text-[14px] font-medium">
                   Disponible en: <app-store-tag [store]="game.store" />
                   @for (genre of (game.details?.genres ?? []).slice(0, 2); track genre) {
                     <span class="rounded-full border border-white/70 px-2.5 py-0.5 text-[11px] uppercase">{{ genre }}</span>
@@ -123,11 +128,33 @@ export class HeroSection {
     return game ? heroUrl(game) : null;
   });
 
+  // Punto donde empezó el arrastre (null = no hay arrastre en curso).
+  protected dragOrigin: { x: number; y: number } | null = null;
+
+  protected dragStart(event: PointerEvent): void {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    this.dragOrigin = { x: event.clientX, y: event.clientY };
+  }
+
+  // Un gesto horizontal de más de 50px cambia de slide; si fue más vertical
+  // que horizontal era un scroll de la página y se ignora.
+  protected dragEnd(event: PointerEvent): void {
+    const start = this.dragOrigin;
+    this.dragOrigin = null;
+    const total = this.total();
+    if (!start || total < 2) return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+    this.index.update((i) => (i + (dx < 0 ? 1 : -1) + total) % total);
+  }
+
   constructor() {
     // El intervalo existe solo con varios slides, sin el mouse encima, con
     // la pestaña visible y sin un tráiler abierto; onCleanup lo corta.
     effect((onCleanup) => {
       const total = this.total();
+      this.index(); // un cambio manual (puntos o arrastre) reinicia la cuenta
       if (total < 2 || this.paused() || !this.visible() || this.ui.trailer()) return;
       const timer = setInterval(() => this.index.update((i) => (i + 1) % total), ROTATE_MS);
       onCleanup(() => clearInterval(timer));
