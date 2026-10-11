@@ -1,68 +1,66 @@
 /* ============================================================
    GameScraping — estilos globales (Tailwind v4)
-   Tokens de diseño como variables CSS (--gs-*) que cambian con el
-   tema; Tailwind los expone como utilidades (bg-canvas, text-ink,
-   shadow-card, rounded-card...). Lo que es muy verboso en utilidades
-   (overlays, halos, animaciones del banner) vive en el .scss de cada
-   componente y usa estas mismas variables.
+   Tokens del diseño como variables CSS (--gs-*) que cambian con el
+   tema; Tailwind los expone como utilidades (bg-surface, text-ink,
+   text-accent, rounded-card...). Lo muy verboso en utilidades vive en
+   el .scss de cada componente y usa estas mismas variables.
    ============================================================ */
 
 @import "tailwindcss";
 
-/* Tema oscuro manual: data-theme="dark" en <html> (no prefers-color-scheme). */
+/* Tema oscuro manual: data-theme="dark" en <html>. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
-  --gs-canvas: #f2f4f5;
-  --gs-surface: #ffffff;
-  --gs-ink: #000000;
-  --gs-ink-2: #787574;
-  --gs-hairline: #ebebeb;
-  --gs-accent: #5433eb;
-
-  --gs-shadow-card: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
-  --gs-shadow-float: rgba(0, 0, 0, 0.12) 0px 4px 24px 0px;
-  --gs-shadow-soft: rgba(0, 0, 0, 0.06) 0px 2px 8px 0px;
-  --gs-shadow-accent: rgba(69, 36, 219, 0.34) 0px 4px 24px 0px;
-
+  --gs-bg: #ffffff;
+  --gs-surface: #f5f5f5;
+  --gs-surface-2: #ececec;
+  --gs-header: #ffffff;
+  --gs-ink: #242424;
+  --gs-ink-2: #6f6f6f;
+  --gs-ink-3: #9a9a9a;
+  --gs-hairline: #e8e8e8;
+  --gs-accent: #6c47ff;
+  --gs-accent-hover: #5a35ef;
+  --gs-star: #f5b301;
+  --gs-overlay: rgba(10, 10, 14, 0.55);
+  --gs-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   --gs-skeleton-sheen: rgba(0, 0, 0, 0.05);
-  --gs-r-card: 28px;
 }
 
 [data-theme="dark"] {
-  --gs-canvas: #15151a;
-  --gs-surface: #1f1f26;
+  --gs-bg: #1b1b1b;
+  --gs-surface: #262626;
+  --gs-surface-2: #303030;
+  --gs-header: #212121;
   --gs-ink: #f2f2f2;
-  --gs-ink-2: #9a9a9f;
-  --gs-hairline: #3a3a42;
-  --gs-accent: #6a4aff;
-
-  --gs-shadow-card: rgba(0, 0, 0, 0.5) 0px 4px 6px -1px, rgba(0, 0, 0, 0.5) 0px 2px 4px -2px;
-  --gs-shadow-float: rgba(0, 0, 0, 0.65) 0px 4px 24px 0px;
-  --gs-shadow-soft: rgba(0, 0, 0, 0.4) 0px 2px 8px 0px;
-  --gs-shadow-accent: rgba(106, 74, 255, 0.4) 0px 4px 24px 0px;
-
-  --gs-skeleton-sheen: rgba(255, 255, 255, 0.06);
+  --gs-ink-2: #a3a3a3;
+  --gs-ink-3: #7a7a7a;
+  --gs-hairline: #333333;
+  --gs-accent: #7a59ff;
+  --gs-accent-hover: #8c6eff;
+  --gs-overlay: rgba(0, 0, 0, 0.7);
+  --gs-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --gs-skeleton-sheen: rgba(255, 255, 255, 0.05);
 }
 
-/* `inline`: las utilidades usan var(--gs-*) directamente, así reaccionan
-   al cambio de tema sin recompilar nada. */
 @theme inline {
-  --color-canvas: var(--gs-canvas);
+  --color-bg: var(--gs-bg);
   --color-surface: var(--gs-surface);
+  --color-surface-2: var(--gs-surface-2);
+  --color-header: var(--gs-header);
   --color-ink: var(--gs-ink);
   --color-ink-2: var(--gs-ink-2);
+  --color-ink-3: var(--gs-ink-3);
   --color-hairline: var(--gs-hairline);
   --color-accent: var(--gs-accent);
-
-  --shadow-card: var(--gs-shadow-card);
-  --shadow-float: var(--gs-shadow-float);
-  --shadow-soft: var(--gs-shadow-soft);
-  --shadow-accent: var(--gs-shadow-accent);
+  --color-accent-hover: var(--gs-accent-hover);
+  --color-star: var(--gs-star);
+  --shadow-float: var(--gs-shadow);
 }
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: "Lexend", ui-sans-serif, system-ui, -apple-system, sans-serif;
 
   --color-steam: #1b2838;
   --color-gog: #86328a;
@@ -70,20 +68,19 @@
   --color-humble: #cb272c;
   --color-fanatical: #265dd8;
 
-  --radius-card: 28px;
+  --radius-card: 10px;
 
-  --tracking-tight: -0.05em;
-  --tracking-body: -0.031em;
+  --breakpoint-xs: 26.25rem; /* 420px */
 
-  /* Breakpoints del diseño original (además de los de Tailwind). */
-  --breakpoint-sm: 36.25rem; /* 580px */
-  --breakpoint-nav: 53.75rem; /* 860px: header compacto por debajo */
-  --breakpoint-banner: 75rem; /* 1200px: banner de escritorio */
+  --animate-fade-in: fade-in 0.35s ease;
+  --animate-dd-in: dd-in 0.18s ease;
 
-  --animate-dd-in: dd-in 0.16s ease;
-
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
   @keyframes dd-in {
-    from { opacity: 0; transform: translateY(-4px); }
+    from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 }
@@ -91,31 +88,73 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* Nunca scroll horizontal: clip recorta sin crear scroll container, así
-       el header sticky sigue funcionando (hidden es el fallback). */
     overflow-x: hidden;
     overflow-x: clip;
   }
   body {
-    @apply bg-canvas font-sans text-base text-ink;
-    letter-spacing: var(--tracking-body);
-    line-height: 1.33;
+    @apply bg-bg font-sans text-[15px] text-ink antialiased;
+    line-height: 1.5;
   }
   h1,
   h2,
-  h3 {
+  h3,
+  h4 {
     font-weight: 500;
+    letter-spacing: -0.01em;
   }
   button:not(:disabled) {
     cursor: pointer;
   }
+  :focus-visible {
+    outline: 2px solid var(--gs-accent);
+    outline-offset: 2px;
+  }
 }
 
-/* Contenedor de página: ancho máximo y márgenes del diseño. */
+/* Contenedor de página del diseño. */
 @utility page {
-  width: 95%;
-  max-width: 1600px;
+  width: 100%;
+  max-width: 1280px;
   margin-inline: auto;
+  padding-inline: 16px;
+  @media (width >= 64rem) {
+    padding-inline: 24px;
+  }
+}
+
+/* Botón principal violeta (pill). */
+@utility btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 9999px;
+  background-color: var(--gs-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.2s;
+  &:hover {
+    background-color: var(--gs-accent-hover);
+  }
+}
+
+/* Botón secundario gris (pill), como "Shop All" del diseño. */
+@utility btn-soft {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background-color: var(--gs-surface);
+  color: var(--gs-ink);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  &:hover {
+    background-color: var(--gs-surface-2);
+  }
 }
 
 /* Placeholder con shimmer mientras cargan los datos. */

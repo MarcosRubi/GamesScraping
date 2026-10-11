@@ -47,13 +47,7 @@
                   "maximumError": "16kB"
                 }
               ],
-              "outputHashing": "all",
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.production.ts"
-                }
-              ]
+              "outputHashing": "all"
             },
             "development": {
               "optimization": false,
@@ -70,6 +64,9 @@
               "buildTarget": "gamescraping:build:production"
             },
             "development": {
+              "buildTarget": "gamescraping:build:development"
+            },
+            "qa": {
               "buildTarget": "gamescraping:build:development"
             }
           },

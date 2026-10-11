@@ -6,4 +6,6 @@ dist
 .claude
 screenshot
 *.md
-.env.local
+.env
+.env.*
+src/environments/environment.ts

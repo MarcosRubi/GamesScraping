@@ -1,30 +1,31 @@
 import { httpResource } from '@angular/common/http';
-import { computed, inject, Injectable, type Signal } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import type { Game, StoreGame, StoreKey } from '../models/game';
+import { computed, inject, Injectable, Injector, runInInjectionContext, type Signal, untracked } from '@angular/core';
+import { api } from '../config/api';
+import type { Game, NewsItem, StoreGame, StoreKey } from '../models/game';
 import { STORE_KEYS, STORES } from '../stores';
-import { dedupeCheapest, discountValue, interleave } from '../utils/game-lists';
+import { dedupeCheapest, discountValue, interleave, normalizeName } from '../utils/game-lists';
 import { ExchangeRateStore } from './exchange-rate.store';
+import { FiltersStore } from './filters.store';
 
-const SECTION_SIZE = 12;
-
-// null = todavía cargando · [] = falló o vino vacía · array = lista lista.
+// null = cargando · [] = falló o vino vacía · array = lista lista.
 export type ListState = StoreGame[] | null;
 
-// Datos de la home. Cada endpoint es un httpResource: hace UNA petición al
-// crearse el servicio (la primera vez que algún componente lo inyecta),
-// expone el resultado como signal y, si la petición sigue en vuelo cuando el
-// injector se destruye, la cancela. Las secciones agregadas son computed:
-// se recalculan solas cuando llega una lista o cambia el tipo de cambio,
-// sin suscripciones manuales que haya que cerrar.
+// Datos de la home. Cada lista es un httpResource (una petición, expuesta
+// como signal, cancelada si el injector se destruye). Las secciones son
+// computed encadenados: cada una excluye los juegos que ya mostró una
+// sección de más arriba, así la página no repite los mismos títulos.
 @Injectable({ providedIn: 'root' })
 export class HomeDataStore {
+  private readonly injector = inject(Injector);
   private readonly rate = inject(ExchangeRateStore).eurUsdRate;
+  private readonly filters = inject(FiltersStore);
 
-  // Más vendidos por tienda (carruseles de abajo + banner + agregado).
-  readonly topSellers = Object.fromEntries(
-    STORE_KEYS.map((key) => [key, this.list(`top-sellers-${STORES[key].apiSlug}`, key)]),
-  ) as Record<StoreKey, Signal<ListState>>;
+  // --- Fuentes -----------------------------------------------------------
+  private readonly spotlight = this.list('steam-spotlight', 'steam');
+  private readonly steamFeature = this.list('steam-feature', 'steam');
+  private readonly steamSpecials = this.list('steam-specials', 'steam');
+  private readonly steamComingSoon = this.list('steam-coming-soon', 'steam');
+  private readonly steamNewReleases = this.list('steam-new-releases', 'steam');
 
   private readonly offers = [
     this.list('top-offers-steam', 'steam'),
@@ -33,78 +34,126 @@ export class HomeDataStore {
     this.list('top-offers-instant-gaming', 'instantGaming'),
   ];
 
-  // Instant Gaming no tiene endpoint de lanzamientos.
-  private readonly releases = [
-    this.list('new-releases-steam', 'steam'),
-    this.list('new-releases-gog', 'gog'),
-    this.list('new-releases-humble', 'humble'),
-    this.list('new-releases-fanatical', 'fanatical'),
+  readonly topSellersByStore = Object.fromEntries(
+    STORE_KEYS.map((key) => [key, this.list(`top-sellers-${STORES[key].apiSlug}`, key)]),
+  ) as Record<StoreKey, Signal<ListState>>;
+
+  private readonly bestRated = [
+    this.list('overwhelmingly-positive-steam', 'steam'),
+    this.list('best-rated-gog', 'gog'),
+    this.list('best-rated-instant-gaming', 'instantGaming'),
   ];
 
-  private readonly bestRatedSteam = this.list('overwhelmingly-positive-steam', 'steam');
-  private readonly bestRatedGog = this.list('best-rated-gog', 'gog');
-  private readonly bestRatedInstantGaming = this.list('best-rated-instant-gaming', 'instantGaming');
+  private readonly newsResource = httpResource<NewsItem[]>(() => api.news());
 
-  // Mejores ofertas: mezcla de tiendas, ordenadas por descuento, dedupe por
-  // título (queda el más barato). Se muestra cuando llegaron todas.
-  readonly topOffers = computed<ListState>(() => {
+  // --- Secciones (en orden de prioridad para el dedupe) -------------------
+
+  // Hero: destacados de Steam con ficha completa.
+  readonly hero = computed(() => this.spotlight()?.slice(0, 5) ?? null);
+
+  // "Juegos en oferta" al costado del hero: ofertas de todas las tiendas,
+  // por mayor descuento, sin repetir el hero.
+  readonly discounted = computed<ListState>(() => {
     const lists = this.allLoaded(this.offers);
     if (!lists) return null;
     const merged = lists
       .flat()
-      .filter((game) => game.discount && !isNaN(discountValue(game.discount)))
+      .filter((g) => g.discount && !isNaN(discountValue(g.discount)) && this.filters.matchesStore(g))
       .sort((a, b) => discountValue(b.discount) - discountValue(a.discount));
-    return dedupeCheapest(merged, this.rate()).slice(0, SECTION_SIZE);
+    return this.excluding(dedupeCheapest(merged, this.rate()), this.usedBy(this.hero)).slice(0, 5);
   });
 
-  readonly newReleases = computed<ListState>(() => {
-    const lists = this.allLoaded(this.releases);
+  // Más vendidos de todas las tiendas (pestaña "Todas").
+  readonly topSellers = computed<ListState>(() => {
+    const lists = this.allLoaded(STORE_KEYS.map((key) => this.topSellersByStore[key]));
     if (!lists) return null;
-    return dedupeCheapest(interleave(lists), this.rate()).slice(0, SECTION_SIZE);
+    const merged = dedupeCheapest(interleave(lists), this.rate()).filter((g) => this.filters.matchesStore(g));
+    return this.excluding(merged, this.usedBy(this.hero, this.discounted)).slice(0, 12);
   });
 
-  readonly topSellersAggregated = computed<ListState>(() => {
-    const lists = this.allLoaded(STORE_KEYS.map((key) => this.topSellers[key]));
+  // Dos banners promocionales: las ofertas de Steam con más descuento.
+  readonly promos = computed<ListState>(() => {
+    const specials = this.steamSpecials();
+    if (!specials) return null;
+    const sorted = [...specials].sort((a, b) => discountValue(b.discount || '0') - discountValue(a.discount || '0'));
+    return this.excluding(sorted, this.usedBy(this.hero, this.discounted, this.topSellers)).slice(0, 2);
+  });
+
+  // Juego destacado con tráilers.
+  readonly feature = computed(() => this.steamFeature()?.[0] ?? null);
+
+  private readonly featureList = computed(() => (this.feature() ? [this.feature()!] : []));
+  // Todo lo que ya se mostró arriba de las columnas.
+  private readonly aboveColumns = computed(() =>
+    this.usedBy(this.hero, this.discounted, this.topSellers, this.promos, this.featureList),
+  );
+
+  readonly newReleases = computed(() => this.column(this.steamNewReleases));
+  readonly comingSoon = computed(() => this.column(this.steamComingSoon));
+  readonly steamDeals = computed(() => this.column(this.steamSpecials));
+  readonly topRated = computed<ListState>(() => {
+    const lists = this.allLoaded(this.bestRated);
     if (!lists) return null;
-    return dedupeCheapest(lists.flat(), this.rate()).slice(0, SECTION_SIZE);
+    const merged = dedupeCheapest(interleave(lists), this.rate()).sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+    return this.excluding(merged, this.aboveColumns()).slice(0, 5);
   });
 
-  // Banner "mejor valorados": junta los destacados de cada tienda (Humble y
-  // Fanatical usan sus más vendidos), intercala y deduplica. Es progresivo:
-  // con la primera lista que llega ya hay banner, y se completa después.
-  readonly featured = computed<ListState>(() => {
-    const sources = [
-      this.bestRatedSteam()?.slice(0, 10) ?? null,
-      this.bestRatedGog(),
-      this.bestRatedInstantGaming(),
-      this.topSellers.humble(),
-      this.topSellers.fanatical(),
-    ];
-    if (sources.every((list) => list === null)) return null;
-    const lists = sources.map((list) => list ?? []);
-    return dedupeCheapest(interleave(lists), this.rate()).slice(0, SECTION_SIZE);
-  });
+  readonly news = computed(() => (this.newsResource.hasValue() ? this.newsResource.value() : null));
 
-  // Categorías presentes en las 3 secciones agregadas, más frecuentes primero.
-  readonly availableCategories = computed(() => {
-    const counts = new Map<string, number>();
-    for (const list of [this.topOffers(), this.newReleases(), this.topSellersAggregated()]) {
-      for (const game of list ?? []) {
-        for (const category of game.categories ?? []) {
-          counts.set(category, (counts.get(category) ?? 0) + 1);
-        }
-      }
+  // Pedidos populares del buscador: los títulos más vendidos, cortos.
+  readonly popularSearches = computed(() =>
+    (this.topSellers() ?? [])
+      .slice(0, 6)
+      .map((g) => g.name.split(/[:\-–(]/)[0].trim())
+      .filter((name) => name.length > 1 && name.length <= 22),
+  );
+
+  // --- Géneros (perezosos) -----------------------------------------------
+  private readonly genreLists = new Map<string, Signal<ListState>>();
+
+  // El recurso de un género se crea la primera vez que alguien lo pide:
+  // si nadie muestra "Carreras", no se hace esa petición. Se suele pedir
+  // desde un computed, y un recurso no puede crearse dentro de un contexto
+  // reactivo: untracked lo crea afuera.
+  genre(slug: string): Signal<ListState> {
+    let list = this.genreLists.get(slug);
+    if (!list) {
+      list = untracked(() => runInInjectionContext(this.injector, () => this.list(`genre-${slug}`, 'steam')));
+      this.genreLists.set(slug, list);
     }
-    return [...counts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 12)
-      .map(([category]) => category);
-  });
+    return list;
+  }
 
-  // Una tienda caída no rompe la sección: su lista queda vacía y el resto
-  // sigue. Se estampa `store` en cada juego para el tag y el filtro.
-  private list(path: string, store: StoreKey): Signal<ListState> {
-    const resource = httpResource<Game[]>(() => `${environment.apiUrl}/${path}`);
+  // Género para "Populares por género": sin los juegos que ya están en el
+  // hero, las ofertas, los más vendidos o los banners.
+  popularInGenre(slug: string): ListState {
+    const games = this.genre(slug)();
+    return games ? this.excluding(games, this.aboveGenres()).slice(0, 5) : null;
+  }
+
+  private readonly aboveGenres = computed(() => this.usedBy(this.hero, this.discounted, this.topSellers, this.promos));
+
+  // --- Helpers -----------------------------------------------------------
+
+  private column(source: Signal<ListState>): ListState {
+    const games = source();
+    return games ? this.excluding(games, this.aboveColumns()).slice(0, 5) : null;
+  }
+
+  private usedBy(...sections: Signal<ListState | StoreGame[]>[]): Set<string> {
+    const used = new Set<string>();
+    for (const section of sections) {
+      for (const game of section() ?? []) used.add(normalizeName(game.name));
+    }
+    return used;
+  }
+
+  private excluding(games: StoreGame[], used: Set<string>): StoreGame[] {
+    return games.filter((g) => !used.has(normalizeName(g.name)));
+  }
+
+  private list(key: string, store: StoreKey): Signal<ListState> {
+    const resource = httpResource<Game[]>(() => api.listing(key));
     return computed(() => {
       if (resource.status() === 'error') return [];
       if (!resource.hasValue()) return null;

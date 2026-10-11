@@ -1,136 +1,74 @@
-<header class="sticky top-0 z-50 flex min-h-[60px] items-center border-b border-hairline bg-surface py-3">
-  <!--
-    Escritorio: flex en una fila. Bajo 860px (max-nav): grid de 2 filas,
-    logo + ayuda + ajustes arriba y buscador a todo el ancho abajo; las
-    acciones usan display:contents para que sus hijos sean celdas del grid.
-  -->
-  <div
-    class="relative mx-auto flex w-[92%] max-w-[1600px] flex-wrap items-center justify-between gap-3 max-nav:grid max-nav:grid-cols-[1fr_auto_auto] max-nav:gap-x-2 max-nav:gap-y-2.5"
-  >
-    <a
-      href="#"
-      class="text-lg font-medium tracking-tight sm:text-xl max-nav:col-start-1 max-nav:row-start-1"
-      (click)="scrollToTop($event)"
+<header class="sticky top-0 z-50 border-b border-hairline bg-header/95 backdrop-blur">
+  <div class="page relative flex h-16 items-center gap-6">
+    <button
+      type="button"
+      class="-ml-1 rounded-full p-2 text-xl text-ink lg:hidden"
+      aria-label="Abrir menú"
+      (click)="mobileOpen.set(true)"
     >
-      GameScraping<span class="text-accent">.</span>
+      <app-icon name="menu" />
+    </button>
+
+    <a href="/" class="flex items-center gap-2 text-[19px] font-semibold tracking-tight text-ink" (click)="goHome($event)">
+      <span class="grid size-8 place-items-center rounded-lg bg-accent text-base text-white"><app-icon name="controller" /></span>
+      GameScraping<span class="-ml-2 text-accent">.</span>
     </a>
 
-    <div class="flex flex-auto flex-wrap items-center justify-end gap-2.5 max-nav:contents">
-      <form
-        class="flex h-9 min-w-[220px] max-w-[460px] flex-auto items-center rounded-full border border-hairline bg-canvas py-[3px] pr-1 pl-3.5 max-nav:col-span-3 max-nav:row-start-2 max-nav:w-full max-nav:max-w-none"
-        role="search"
-        (submit)="submitSearch($event)"
-      >
-        <input
-          type="text"
-          class="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-ink-2"
-          placeholder="Buscar..."
-          aria-label="Nombre del juego"
-          [value]="search.term()"
-          (input)="onSearchInput($event)"
-        />
-        <button
-          type="submit"
-          class="flex size-7 shrink-0 items-center justify-center rounded-full bg-accent text-sm text-white"
-          aria-label="Buscar"
-        >
-          <app-icon name="search" />
-        </button>
-      </form>
-
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
       <button
-        #toolsToggle
+        #megaTrigger
         type="button"
-        class="relative hidden h-9 w-[42px] shrink-0 items-center justify-center rounded-full border border-hairline bg-surface text-[15px] text-ink shadow-soft max-nav:col-start-3 max-nav:row-start-1 max-nav:inline-flex"
-        aria-label="Filtros y moneda"
-        [attr.aria-expanded]="toolsOpen()"
-        (click)="toolsOpen.set(!toolsOpen())"
+        class="flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent"
+        [class.text-accent]="megaOpen()"
+        [attr.aria-expanded]="megaOpen()"
+        (click)="megaOpen.set(!megaOpen())"
       >
-        <app-icon name="sliders" />
-        @if (filters.activeCount() > 0) {
-          <span
-            class="absolute -top-[5px] -right-[5px] inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-semibold text-white"
-          >
-            {{ filters.activeCount() }}
-          </span>
+        Explorar
+        @if (filters.stores().length > 0) {
+          <span class="grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] text-white">{{ filters.stores().length }}</span>
         }
+        <app-icon name="chevron-down" class="text-[11px] transition-transform" [class.rotate-180]="megaOpen()" />
       </button>
-
-      <!-- Herramientas: en línea en escritorio; panel flotante en móvil. -->
-      <div
-        #tools
-        class="flex items-center gap-2.5 max-nav:absolute max-nav:top-[calc(100%+20px)] max-nav:right-0 max-nav:left-0 max-nav:z-60 max-nav:flex-wrap max-nav:justify-center max-nav:rounded-[20px] max-nav:border max-nav:border-hairline max-nav:bg-surface max-nav:p-3 max-nav:shadow-float max-nav:data-[open=false]:hidden max-nav:data-[open=true]:animate-dd-in"
-        [attr.data-open]="toolsOpen()"
-      >
-        <div #filtersRow class="flex items-center gap-2 max-nav:w-full max-nav:min-w-0">
-          <app-filter-dropdown
-            label="Tiendas"
-            [options]="storeOptions"
-            [selected]="filters.stores()"
-            (selectedChange)="setStores($event)"
-            [open]="openDropdown() === 'stores'"
-            (toggle)="toggleDropdown('stores')"
-          />
-          @if (categoryOptions().length > 0) {
-            <app-filter-dropdown
-              label="Categorías"
-              [options]="categoryOptions()"
-              [(selected)]="filters.categories"
-              [open]="openDropdown() === 'categories'"
-              (toggle)="toggleDropdown('categories')"
-            />
-          }
-        </div>
-
-        <div
-          class="inline-flex h-9 items-center gap-0.5 rounded-full border border-hairline bg-surface p-[3px] shadow-soft"
-          role="group"
-          aria-label="Moneda de los precios"
-        >
-          @for (option of currencies; track option.key) {
-            <button
-              type="button"
-              class="inline-flex h-7 min-w-9 items-center justify-center rounded-full px-2.5 text-[12.5px] font-medium transition-colors"
-              [class]="
-                preferences.currency() === option.key ? 'bg-ink text-surface' : 'bg-transparent text-ink-2 hover:text-ink'
-              "
-              [attr.aria-pressed]="preferences.currency() === option.key"
-              (click)="preferences.currency.set(option.key)"
-            >
-              {{ option.label }}
-            </button>
-          }
-        </div>
-
-        <div
-          class="inline-flex h-9 items-center gap-0.5 rounded-full border border-hairline bg-surface p-[3px] shadow-soft"
-          role="group"
-          aria-label="Tema de la interfaz"
-        >
-          @for (option of themes; track option.key) {
-            <button
-              type="button"
-              class="inline-flex h-7 min-w-9 items-center justify-center rounded-full px-2.5 text-[12.5px] transition-colors"
-              [class]="
-                preferences.theme() === option.key ? 'bg-ink text-surface' : 'bg-transparent text-ink-2 hover:text-ink'
-              "
-              [attr.aria-pressed]="preferences.theme() === option.key"
-              [attr.aria-label]="option.label"
-              (click)="preferences.theme.set(option.key)"
-            >
-              <app-icon [name]="option.icon" />
-            </button>
-          }
-        </div>
-      </div>
-
-      <button
-        type="button"
-        class="rounded-full border border-hairline bg-surface px-3 py-[7px] text-xs whitespace-nowrap text-ink shadow-soft transition-colors hover:bg-canvas sm:px-4 sm:py-2 sm:text-[13px] max-nav:col-start-2 max-nav:row-start-1 max-nav:justify-self-end"
-        (click)="openHowItWorks()"
-      >
+      <button type="button" class="rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent" (click)="goToSection('ofertas')">
+        Ofertas
+      </button>
+      <button type="button" class="rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent" (click)="goToSection('como-funciona')">
         ¿Cómo funciona?
       </button>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2.5">
+      <!-- Abre el buscador a pantalla completa -->
+      <button
+        type="button"
+        class="hidden h-10 w-64 items-center justify-between rounded-full border border-hairline bg-bg pr-1 pl-4 text-[13px] text-ink-3 transition-colors hover:border-accent md:flex xl:w-72"
+        (click)="ui.searchOpen.set(true)"
+      >
+        Buscar juegos...
+        <span class="grid size-8 place-items-center rounded-full bg-accent text-sm text-white"><app-icon name="search" /></span>
+      </button>
+      <button
+        type="button"
+        class="grid size-10 place-items-center rounded-full bg-surface text-ink md:hidden"
+        aria-label="Buscar"
+        (click)="ui.searchOpen.set(true)"
+      >
+        <app-icon name="search" />
+      </button>
+
+      <span class="hidden h-6 w-px bg-hairline lg:block"></span>
+      <app-currency-switch class="hidden sm:flex" />
+      <app-theme-toggle />
     </div>
   </div>
+
+  @if (megaOpen()) {
+    <div #megaPanel class="absolute inset-x-0 top-full hidden lg:block">
+      <app-mega-menu (navigate)="goToSection($event)" />
+    </div>
+  }
 </header>
+
+@if (mobileOpen()) {
+  <app-mobile-menu (closed)="mobileOpen.set(false)" (navigate)="goToSection($event)" />
+}

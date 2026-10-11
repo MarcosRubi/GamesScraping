@@ -31,3 +31,10 @@ dist-ssr
 /.angular/cache
 /out-tsc
 /coverage
+
+# Variables de entorno: solo se versiona la plantilla
+.env
+.env.*
+!.env.example
+# Generado desde .env.<modo> por scripts/generate-env.mjs
+/src/environments/environment.ts

@@ -1,29 +1,23 @@
 import { computed, Injectable, signal } from '@angular/core';
-import type { Game, StoreKey } from '../models/game';
+import type { StoreKey } from '../models/game';
 import { STORE_KEYS } from '../stores';
 
-// Filtros multi-selección. Array vacío = "Todas".
-// - stores: limita las secciones de la home Y en qué tiendas se busca.
-// - categories: solo filtra las secciones de la home.
+// Filtro de tiendas (multi-selección, vacío = todas): limita las secciones
+// multi-tienda de la home y en qué tiendas se busca.
 @Injectable({ providedIn: 'root' })
 export class FiltersStore {
   readonly stores = signal<StoreKey[]>([]);
-  readonly categories = signal<string[]>([]);
 
-  readonly activeCount = computed(() => this.stores().length + this.categories().length);
-
-  // Tiendas donde buscar: las del filtro, o todas si no hay filtro.
   readonly searchStores = computed<readonly StoreKey[]>(() =>
     this.stores().length > 0 ? this.stores() : STORE_KEYS,
   );
 
-  matches(game: Game & { store: StoreKey }): boolean {
+  toggleStore(key: StoreKey): void {
+    this.stores.update((current) => (current.includes(key) ? current.filter((k) => k !== key) : [...current, key]));
+  }
+
+  matchesStore(game: { store: StoreKey }): boolean {
     const stores = this.stores();
-    const categories = this.categories();
-    if (stores.length > 0 && !stores.includes(game.store)) return false;
-    if (categories.length > 0 && !(game.categories ?? []).some((c) => categories.includes(c))) {
-      return false;
-    }
-    return true;
+    return stores.length === 0 || stores.includes(game.store);
   }
 }

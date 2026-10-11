@@ -1,71 +1,70 @@
 # GameScraping
 
-Compara el precio de un videojuego en Steam, GOG, Instant Gaming, Humble Store y Fanatical. Los datos vienen de la [API de scraping](https://github.com/MarcosRubi/API-gaming-scraping) (NestJS).
+Compara el precio de un videojuego en Steam, GOG, Instant Gaming, Humble Store y Fanatical. Los datos vienen de la [API](https://github.com/MarcosRubi/API-gaming-scraping) (NestJS).
 
 Sitio: [games-scraping.mrubi.dev](https://games-scraping.mrubi.dev)
 
-## Capturas
-
-Página inicial
-![](screenshot/inicio.png)
-Resultados de búsqueda
-![](screenshot/busqueda.png)
-Secciones adicionales
-![](screenshot/homepage.png)
-
 ## Tecnologías
-- [Angular 22](https://angular.dev/): componentes standalone, zoneless, signals y `httpResource`
-- [Tailwind CSS 4](https://tailwindcss.com/) para layout y utilidades; SCSS por componente donde las utilidades se vuelven ilegibles (overlays, halos, animaciones del banner)
-- Vitest para tests unitarios
+- [Angular 22](https://angular.dev/): standalone, zoneless, signals, `httpResource`, router con carga diferida y `@defer`
+- [Tailwind CSS 4](https://tailwindcss.com/) (tokens del diseño como variables CSS, tema claro/oscuro)
+- [hls.js](https://github.com/video-dev/hls.js) para los tráilers de Steam (se descarga solo al reproducir)
+- Vitest
 
-## Desarrollo
+## Entornos y scripts
 
-Requiere Node ≥ 22.22 (o 24 LTS).
+Requiere Node ≥ 22.22 (o 24 LTS). Las variables viven en `.env.<entorno>` (no se versionan); la plantilla es [.env.example](.env.example). `scripts/generate-env.mjs` genera `src/environments/environment.ts` a partir de ese archivo antes de servir o compilar.
 
 ```bash
 npm install
-npm start          # http://localhost:4200 (usa la API en http://localhost:3000)
+cp .env.example .env.development   # API_URL=http://localhost:3000
+cp .env.example .env.qa            # API_URL del VPS + analítica
+
+npm run start:dev    # ng serve con las variables de desarrollo
+npm run start:qa     # ng serve con las variables de QA (VPS)
+npm run build:qa     # build de producción con las variables de QA → dist/gamescraping/browser
 npm test
-npm run build      # dist/gamescraping/browser
 ```
 
-La URL de la API se define en `src/environments/` (`environment.production.ts` en el build de producción).
+Para que `start:qa` funcione desde tu PC, la API de QA tiene que aceptar `http://localhost:4200` en `ALLOWED_ORIGINS`.
 
 ## Estructura
 
 ```
 src/app/
+  app.ts  app.config.ts  app.routes.ts
   core/
-    models/       tipos (Game, StoreKey...)
-    state/        stores con signals: preferencias, tipo de cambio, filtros, búsqueda, datos de la home
-    browser/      helpers que convierten eventos del navegador en signals y se limpian solos
-    utils/        precios, moneda, dedupe e intercalado de listas (con tests)
-  shared/         GameCard, Carousel, InfoNote, StoreTag, Icon
-  layout/header/  header, buscador y filtros
-  features/       banner destacado, secciones de la home, resultados de búsqueda, modal
+    config/      URLs de la API y analítica (desde environment)
+    models/      tipos (Game, StoreGame, NewsItem...)
+    state/       stores con signals: preferencias, tipo de cambio, filtros, datos de la home, UI
+    browser/     helpers del navegador que se limpian solos (media query, visibilidad, click afuera, scroll)
+    utils/       precios, moneda, listas (dedupe/intercalado) e imágenes de Steam — con tests
+  shared/ui/     componentes reutilizables: GameCard, GameRow, GameCover, Price, Rating, TrailerPlayer, Icon...
+  layout/        header (mega menú, menú móvil, moneda, tema), buscador a pantalla completa, footer
+  features/
+    home/        página de inicio y sus secciones
+    search/      página de resultados (/buscar?q=)
 ```
 
-## Criterios usados
+## Criterios
 
-**Cuándo signal y cuándo no**
-- `signal`: estado que se pinta (tema, moneda, filtros, índice del banner, panel abierto).
-- `computed`: todo lo derivado (secciones agregadas, precio convertido, mejor precio). Nunca un `effect` que escribe otra signal.
-- `linkedSignal`: estado local editable que se reinicia cuando cambia su origen (el índice n/m de cada resultado vuelve a 0 con una búsqueda nueva).
-- `effect`: solo para sincronizar con algo externo a Angular (localStorage, `data-theme` en `<html>`, timers, scroll).
-- Campo normal (no signal): valores transitorios que no se pintan, como el estado de un arrastre en curso.
-- `httpResource`: peticiones como signals. Cancela la anterior si cambia el request (sin carreras en la búsqueda) y una tienda fuera del filtro no hace petición.
+**Secciones sin repetir:** cada sección tiene su propia fuente (destacados de Steam, ofertas multi-tienda, más vendidos, ofertas de Steam, géneros, próximos, novedades, mejor valorados) y, además, un computed excluye los juegos que ya mostró una sección de más arriba.
 
-**Nada corriendo cuando no hace falta**
-- Timers del banner y del slideshow: viven en un `effect` con `onCleanup`; se pausan con el mouse encima y cuando la pestaña no está visible.
-- Listeners de `document` para cerrar paneles: solo existen mientras el panel está abierto.
-- `pointermove`/`pointerup` del carrusel: solo durante el arrastre. `ResizeObserver`: se desconecta al destruir el componente.
-- Carruseles por tienda con `@defer (on viewport)`: no se crean (ni se descarga su código) hasta acercarse a la pantalla.
-- El tipo de cambio se pide una sola vez si el cacheado tiene más de 12 h; `HttpClient.get` completa solo.
+**Signals**
+- `signal` para estado que se pinta; `computed` para todo lo derivado (nunca un `effect` que escribe otra signal).
+- `linkedSignal` para estado local que se reinicia con su origen (índice n/m de un resultado, imagen de respaldo de una portada).
+- `effect` solo para sincronizar con el exterior: localStorage, `data-theme`, timers.
+- `httpResource` para las peticiones: cancela la anterior si cambia el request, y los recursos de la página de búsqueda viven en ese componente (salir de la página cancela lo pendiente).
+- Campos normales para valores que no se pintan.
+
+**Nada corriendo de más**
+- Rotación del hero: `effect` con `onCleanup`; se pausa con el mouse encima, con la pestaña oculta o con un tráiler abierto.
+- Listeners de `document` (click afuera, Escape): solo mientras el panel está abierto.
+- Buscador, menú móvil y reproductor existen solo mientras están abiertos; `hls.js` se destruye al cerrar.
+- Secciones de abajo con `@defer (on viewport)` y géneros pedidos a demanda.
 
 ## Docker
 ```bash
-docker build -t gamescraping .
-docker run -p 8080:80 gamescraping
+docker build --build-arg API_URL=https://api.ejemplo.com -t gamescraping-web .
 ```
 
 ## Autor

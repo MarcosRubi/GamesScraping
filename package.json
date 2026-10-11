@@ -3,10 +3,16 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "env:dev": "node scripts/generate-env.mjs development",
+    "env:qa": "node scripts/generate-env.mjs qa",
+    "start:dev": "npm run env:dev && ng serve",
+    "start:qa": "npm run env:qa && ng serve --configuration qa",
+    "start": "npm run start:dev",
+    "build:dev": "npm run env:dev && ng build --configuration development",
+    "build:qa": "npm run env:qa && ng build --configuration production",
+    "build": "npm run build:qa",
+    "test": "npm run env:dev && ng test",
+    "watch": "npm run env:dev && ng build --watch --configuration development"
   },
   "private": true,
   "packageManager": "npm@11.19.0",
@@ -17,6 +23,7 @@
     "@angular/forms": "^22.2.0",
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
+    "hls.js": "^1.7.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
