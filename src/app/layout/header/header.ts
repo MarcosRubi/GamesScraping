@@ -1,8 +1,7 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { dismissOnOutside } from '../../core/browser/dismiss';
-import { scrollToId } from '../../core/browser/scroll';
 import { FiltersStore } from '../../core/state/filters.store';
+import { SectionNavigator } from '../../core/state/section-navigator';
 import { PreferencesStore } from '../../core/state/preferences.store';
 import { UiStore } from '../../core/state/ui.store';
 import { Icon } from '../../shared/ui/icon/icon';
@@ -20,7 +19,7 @@ import { ThemeToggle } from './theme-toggle';
   templateUrl: './header.html',
 })
 export class Header {
-  private readonly router = inject(Router);
+  private readonly sections = inject(SectionNavigator);
   protected readonly ui = inject(UiStore);
   protected readonly filters = inject(FiltersStore);
   protected readonly preferences = inject(PreferencesStore);
@@ -62,12 +61,13 @@ export class Header {
   // Ir a una sección de la home (desde cualquier página).
   protected goToSection(id: string): void {
     this.megaOpen.set(false);
+    this.howOpen.set(false);
     this.mobileOpen.set(false);
-    void this.router.navigate(['/']).then(() => scrollToId(id));
+    this.sections.goTo(id);
   }
 
   protected goHome(event: Event): void {
     event.preventDefault();
-    void this.router.navigate(['/']).then(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    this.sections.goHome();
   }
 }

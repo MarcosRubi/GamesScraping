@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { scrollToId } from '../../core/browser/scroll';
 import { GENRES } from '../../core/genres';
+import { SectionNavigator } from '../../core/state/section-navigator';
 import { UiStore } from '../../core/state/ui.store';
 import { STORE_KEYS, STORES } from '../../core/stores';
 import { CurrencySwitch } from '../header/currency-switch';
@@ -87,7 +86,7 @@ const STORE_HOMEPAGES: Record<string, string> = {
   `,
 })
 export class Footer {
-  private readonly router = inject(Router);
+  private readonly sectionNav = inject(SectionNavigator);
   private readonly ui = inject(UiStore);
 
   protected readonly year = new Date().getFullYear();
@@ -98,7 +97,7 @@ export class Footer {
   protected readonly genres = GENRES;
 
   protected goTo(id: string): void {
-    void this.router.navigate(['/']).then(() => scrollToId(id));
+    this.sectionNav.goTo(id);
   }
 
   protected pickGenre(slug: string): void {

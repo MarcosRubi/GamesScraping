@@ -14,7 +14,7 @@ import { Rating } from './rating';
   template: `
     @let g = game();
     <a [href]="g.url" target="_blank" rel="noreferrer" class="group flex items-center gap-3.5 rounded-lg p-1 transition-colors hover:bg-surface-2">
-      <app-game-cover [game]="g" class="h-[76px] w-[57px] shrink-0 rounded-md!" />
+      <app-game-cover [game]="g" fit="cover" class="h-[76px] w-[57px] shrink-0 rounded-md!" />
       <div class="min-w-0">
         <p class="truncate text-[14px] text-ink group-hover:text-accent" [title]="g.name">{{ g.name }}</p>
         @if (g.rating) {
