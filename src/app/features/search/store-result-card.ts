@@ -11,15 +11,19 @@ import { StoreTag } from '../../shared/ui/store-tag';
 @Component({
   selector: 'app-store-result-card',
   imports: [GameCover, Icon, Price, StoreTag],
-  host: { class: 'group block min-w-0' },
+  // Columna flex: el título reserva 2 líneas y el botón va al fondo, así
+  // precios y botones quedan a la misma altura en toda la fila.
+  host: { class: 'group flex min-w-0 flex-col' },
   template: `
     @let g = current();
     <div class="relative rounded-card" [class]="best() ? 'ring-2 ring-accent ring-offset-4 ring-offset-bg' : ''">
       <app-game-cover [game]="g" class="aspect-[3/4] w-full" />
-      <app-store-tag class="absolute top-2.5 left-2.5" [store]="store()" />
-      @if (best()) {
-        <span class="absolute top-2.5 right-2.5 rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-medium text-white">Mejor precio</span>
-      }
+      <div class="absolute inset-x-2.5 top-2.5 flex items-start justify-between gap-1.5">
+        <app-store-tag [store]="store()" [compact]="true" />
+        @if (best()) {
+          <span class="rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-medium text-white">Mejor precio</span>
+        }
+      </div>
       @if (games().length > 1) {
         <div class="absolute inset-x-0 bottom-2.5 flex justify-center">
           <div class="flex items-center gap-1 rounded-full bg-white/95 px-1.5 py-1 text-[12px] font-medium text-black shadow">
@@ -34,9 +38,9 @@ import { StoreTag } from '../../shared/ui/store-tag';
         </div>
       }
     </div>
-    <h3 class="mt-3 line-clamp-2 text-[15px] leading-snug text-ink" [title]="g.name">{{ g.name }}</h3>
-    <app-price [game]="g" class="mt-1 text-[15px]" />
-    <a [href]="g.url" target="_blank" rel="noreferrer" class="btn-primary mt-3 w-full">Comprar en {{ storeLabel() }}</a>
+    <h3 class="mt-3 line-clamp-2 min-h-[2lh] text-[15px] leading-snug text-ink" [title]="g.name">{{ g.name }}</h3>
+    <app-price [game]="g" class="mt-1 mb-4 text-[15px]" />
+    <a [href]="g.url" target="_blank" rel="noreferrer" class="btn-primary mt-auto w-full">Comprar en {{ storeLabel() }}</a>
   `,
 })
 export class StoreResultCard {

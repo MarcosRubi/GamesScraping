@@ -8,5 +8,7 @@ import type { Trailer } from '../models/game';
 export class UiStore {
   readonly searchOpen = signal(false);
   readonly trailer = signal<Trailer | null>(null);
+  // Juego abierto en el modal de "Comparar" (null = cerrado).
+  readonly compare = signal<string | null>(null);
   readonly popularGenre = signal('action');
 }
