@@ -21,7 +21,7 @@
         class="flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent"
         [class.text-accent]="megaOpen()"
         [attr.aria-expanded]="megaOpen()"
-        (click)="megaOpen.set(!megaOpen())"
+        (click)="toggleMega()"
       >
         Explorar
         @if (filters.stores().length > 0) {
@@ -32,8 +32,16 @@
       <button type="button" class="rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent" (click)="goToSection('ofertas')">
         Ofertas
       </button>
-      <button type="button" class="rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent" (click)="goToSection('como-funciona')">
+      <button
+        #howTrigger
+        type="button"
+        class="flex items-center gap-1.5 rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent"
+        [class.text-accent]="howOpen()"
+        [attr.aria-expanded]="howOpen()"
+        (click)="toggleHow()"
+      >
         ¿Cómo funciona?
+        <app-icon name="chevron-down" class="text-[11px] transition-transform" [class.rotate-180]="howOpen()" />
       </button>
     </nav>
 
@@ -61,6 +69,15 @@
       <app-theme-toggle />
     </div>
   </div>
+
+  @if (howOpen()) {
+    <div #howPanel class="absolute inset-x-0 top-full hidden border-b border-hairline bg-header shadow-float animate-dd-in lg:block">
+      <div class="page py-8">
+        <h2 class="mb-6 text-xl">¿Cómo funciona GameScraping?</h2>
+        <app-how-it-works />
+      </div>
+    </div>
+  }
 
   @if (megaOpen()) {
     <div #megaPanel class="absolute inset-x-0 top-full hidden lg:block">

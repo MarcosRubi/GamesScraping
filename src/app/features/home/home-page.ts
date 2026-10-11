@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AboutSection } from './sections/about-section';
 import { GenreTiles } from './sections/genre-tiles';
 import { HeroSection } from './sections/hero-section';
 import { ListColumns } from './sections/list-columns';
@@ -26,7 +25,6 @@ import { TopSellersSection } from './sections/top-sellers-section';
     SpotlightSection,
     ListColumns,
     NewsSection,
-    AboutSection,
   ],
   template: `
     <app-hero-section />
@@ -61,14 +59,6 @@ import { TopSellersSection } from './sections/top-sellers-section';
     <section id="noticias" class="mt-20 scroll-mt-24">
       @defer (on viewport) {
         <app-news-section />
-      } @placeholder {
-        <div class="h-[300px]"></div>
-      }
-    </section>
-
-    <section id="como-funciona" class="mt-20 scroll-mt-24">
-      @defer (on viewport) {
-        <app-about-section />
       } @placeholder {
         <div class="h-[300px]"></div>
       }

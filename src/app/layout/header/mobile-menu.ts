@@ -1,10 +1,11 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { GENRES } from '../../core/genres';
 import { FiltersStore } from '../../core/state/filters.store';
 import { UiStore } from '../../core/state/ui.store';
 import { STORE_KEYS, STORES } from '../../core/stores';
 import { Icon } from '../../shared/ui/icon/icon';
 import { CurrencySwitch } from './currency-switch';
+import { HowItWorks } from './how-it-works';
 import { SECTION_LINKS } from './nav-links';
 import { ThemeToggle } from './theme-toggle';
 
@@ -12,7 +13,7 @@ import { ThemeToggle } from './theme-toggle';
 // que el listener de Escape vive lo mismo que el panel.
 @Component({
   selector: 'app-mobile-menu',
-  imports: [Icon, CurrencySwitch, ThemeToggle],
+  imports: [Icon, CurrencySwitch, ThemeToggle, HowItWorks],
   host: { '(document:keydown.escape)': 'closed.emit()' },
   template: `
     <div class="fixed inset-0 z-[200] bg-black/50 animate-fade-in" (click)="closed.emit()"></div>
@@ -42,9 +43,20 @@ import { ThemeToggle } from './theme-toggle';
           </li>
         }
         <li>
-          <button type="button" class="flex w-full items-center gap-3 py-2.5 text-[15px]" (click)="navigate.emit('como-funciona')">
+          <button
+            type="button"
+            class="flex w-full items-center gap-3 py-2.5 text-[15px]"
+            [attr.aria-expanded]="howOpen()"
+            (click)="howOpen.set(!howOpen())"
+          >
             <app-icon name="info" class="text-accent" /> ¿Cómo funciona?
+            <app-icon name="chevron-down" class="ml-auto text-[11px] transition-transform" [class.rotate-180]="howOpen()" />
           </button>
+          @if (howOpen()) {
+            <div class="mt-1 mb-3 rounded-card bg-surface p-4 animate-dd-in">
+              <app-how-it-works [compact]="true" />
+            </div>
+          }
         </li>
       </ul>
 
@@ -89,6 +101,7 @@ export class MobileMenu {
   protected readonly sections = SECTION_LINKS;
   protected readonly genres = GENRES;
   protected readonly stores = STORE_KEYS.map((key) => STORES[key]);
+  protected readonly howOpen = signal(false);
 
   protected openSearch(): void {
     this.closed.emit();

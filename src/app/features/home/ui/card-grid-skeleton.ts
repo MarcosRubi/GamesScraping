@@ -17,5 +17,5 @@ import { Component, computed, input } from '@angular/core';
 export class CardGridSkeleton {
   readonly count = input(6);
   protected readonly items = computed(() => Array.from({ length: this.count() }, (_, i) => i));
-  protected readonly colsClass = computed(() => (this.count() === 5 ? 'lg:grid-cols-5' : 'lg:grid-cols-6'));
+  protected readonly colsClass = computed(() => (this.count() % 5 === 0 ? 'lg:grid-cols-5' : 'lg:grid-cols-6'));
 }

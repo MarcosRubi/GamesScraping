@@ -128,7 +128,7 @@ export class HomeDataStore {
   // hero, las ofertas, los más vendidos o los banners.
   popularInGenre(slug: string): ListState {
     const games = this.genre(slug)();
-    return games ? this.excluding(games, this.aboveGenres()).slice(0, 5) : null;
+    return games ? this.excluding(games, this.aboveGenres()).slice(0, 10) : null;
   }
 
   private readonly aboveGenres = computed(() => this.usedBy(this.hero, this.discounted, this.topSellers, this.promos));

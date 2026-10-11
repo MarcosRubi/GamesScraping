@@ -5,17 +5,19 @@ import { UiStore } from '../../../core/state/ui.store';
 import { GameCard } from '../../../shared/ui/game-card';
 import { CardGridSkeleton } from '../ui/card-grid-skeleton';
 
-// "Populares por género": lista de géneros a la izquierda y los cinco más
-// populares de Steam del elegido. El género vive en UiStore porque también
+// "Populares por género": lista de géneros a la izquierda y, a la derecha,
+// dos filas con los diez más populares de Steam del elegido. El género vive en UiStore porque también
 // lo eligen los mosaicos, el menú y el footer.
 @Component({
   selector: 'app-popular-by-genre',
   imports: [GameCard, CardGridSkeleton],
   template: `
-    <div class="page grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-      <nav class="rounded-card bg-surface p-5" aria-label="Géneros">
-        <h2 class="mb-3 text-[22px]">Populares por género</h2>
-        <ul class="flex flex-wrap gap-x-4 gap-y-1 lg:block">
+    <!-- Grid con stretch: el panel de géneros toma la altura de las dos filas
+         de tarjetas. -->
+    <div class="page grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
+      <nav class="flex flex-col rounded-card bg-surface p-6" aria-label="Géneros">
+        <h2 class="mb-4 text-xl whitespace-nowrap">Populares por género</h2>
+        <ul class="flex flex-wrap gap-x-4 gap-y-1 lg:flex-1 lg:flex-col lg:justify-between lg:gap-0">
           @for (genre of genres; track genre.slug) {
             <li>
               <button
@@ -41,7 +43,7 @@ import { CardGridSkeleton } from '../ui/card-grid-skeleton';
           }
         </div>
       } @else {
-        <app-card-grid-skeleton [count]="5" />
+        <app-card-grid-skeleton [count]="10" />
       }
     </div>
   `,
