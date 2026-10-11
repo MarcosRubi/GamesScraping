@@ -18,9 +18,9 @@ import { Rating } from './rating';
       <div class="min-w-0">
         <p class="truncate text-[14px] text-ink group-hover:text-accent" [title]="g.name">{{ g.name }}</p>
         @if (g.rating) {
-          <app-rating [value]="g.rating" mode="stars" class="mt-0.5 text-[12px]" />
+          <div class="mt-0.5"><app-rating [value]="g.rating" mode="stars" class="text-[12px]" /></div>
         }
-        <app-price [game]="g" class="mt-0.5 text-[13px]" />
+        <div class="mt-0.5"><app-price [game]="g" class="text-[13px]" /></div>
       </div>
     </a>
   `,
