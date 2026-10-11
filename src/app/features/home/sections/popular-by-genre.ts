@@ -1,5 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Icon } from '../../../shared/ui/icon/icon';
 import { shopLink } from '../../shop/shop-filters.model';
 import { GENRES } from '../../../core/genres';
 import { HomeDataStore } from '../../../core/state/home-data.store';
@@ -12,7 +13,7 @@ import { CardGridSkeleton } from '../ui/card-grid-skeleton';
 // lo eligen los mosaicos, el menú y el footer.
 @Component({
   selector: 'app-popular-by-genre',
-  imports: [RouterLink, GameCard, CardGridSkeleton],
+  imports: [RouterLink, Icon, GameCard, CardGridSkeleton],
   template: `
     <!-- Grid con stretch: el panel de géneros toma la altura de las dos filas
          de tarjetas. -->
@@ -34,7 +35,10 @@ import { CardGridSkeleton } from '../ui/card-grid-skeleton';
             </li>
           }
         </ul>
-        <a routerLink="/juegos" [queryParams]="viewAll()" class="btn-soft mt-4 self-start">Ver todos de {{ genreLabel() }}</a>
+        <!-- btn-primary: el gris de btn-soft se perdía sobre el fondo del panel -->
+        <a routerLink="/juegos" [queryParams]="viewAll()" class="btn-primary mt-5 w-full">
+          Ver todos de {{ genreLabel() }} <app-icon name="arrow-right" class="text-base" />
+        </a>
       </nav>
 
       @if (games(); as list) {
