@@ -29,9 +29,21 @@
         }
         <app-icon name="chevron-down" class="text-[11px] transition-transform" [class.rotate-180]="megaOpen()" />
       </button>
-      <button type="button" class="rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent" (click)="goToSection('ofertas')">
+      <a
+        routerLink="/juegos"
+        class="rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent"
+        (click)="closePanels()"
+      >
+        Juegos
+      </a>
+      <a
+        routerLink="/juegos"
+        [queryParams]="offersLink"
+        class="rounded-full px-3 py-2 text-[14px] font-medium transition-colors hover:text-accent"
+        (click)="closePanels()"
+      >
         Ofertas
-      </button>
+      </a>
       <button
         #howTrigger
         type="button"

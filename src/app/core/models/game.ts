@@ -59,6 +59,16 @@ export interface StoreGame extends Game {
   store: StoreKey;
 }
 
+// Listas temáticas del catálogo (mismos slugs que la API y que la URL).
+export type CatalogList = 'destacados' | 'mas-vendidos' | 'ofertas' | 'novedades' | 'proximamente' | 'mejor-valorados';
+
+// Juego del catálogo completo (página "Juegos").
+export interface CatalogGame extends StoreGame {
+  lists: CatalogList[];
+  // Menor = más popular.
+  rank: number;
+}
+
 export interface NewsItem {
   id: string;
   title: string;

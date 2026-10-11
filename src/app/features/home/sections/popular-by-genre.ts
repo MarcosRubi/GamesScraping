@@ -1,4 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { shopLink } from '../../shop/shop-filters.model';
 import { GENRES } from '../../../core/genres';
 import { HomeDataStore } from '../../../core/state/home-data.store';
 import { UiStore } from '../../../core/state/ui.store';
@@ -10,7 +12,7 @@ import { CardGridSkeleton } from '../ui/card-grid-skeleton';
 // lo eligen los mosaicos, el menú y el footer.
 @Component({
   selector: 'app-popular-by-genre',
-  imports: [GameCard, CardGridSkeleton],
+  imports: [RouterLink, GameCard, CardGridSkeleton],
   template: `
     <!-- Grid con stretch: el panel de géneros toma la altura de las dos filas
          de tarjetas. -->
@@ -32,6 +34,7 @@ import { CardGridSkeleton } from '../ui/card-grid-skeleton';
             </li>
           }
         </ul>
+        <a routerLink="/juegos" [queryParams]="viewAll()" class="btn-soft mt-4 self-start">Ver todos de {{ genreLabel() }}</a>
       </nav>
 
       @if (games(); as list) {
@@ -54,4 +57,6 @@ export class PopularByGenre {
   protected readonly genres = GENRES;
 
   protected readonly games = computed(() => this.home.popularInGenre(this.ui.popularGenre()));
+  protected readonly genreLabel = computed(() => GENRES.find((g) => g.slug === this.ui.popularGenre())?.label ?? '');
+  protected readonly viewAll = computed(() => shopLink({ genres: [this.genreLabel()] }));
 }

@@ -24,3 +24,8 @@ export const STORES: Record<StoreKey, StoreInfo> = {
   humble: { key: 'humble', label: 'Humble Store', shortLabel: 'Humble', apiSlug: 'humble' },
   fanatical: { key: 'fanatical', label: 'Fanatical', shortLabel: 'Fanatical', apiSlug: 'fanatical' },
 };
+
+// Tienda a partir del slug de la API / URL ("instant-gaming" → instantGaming).
+export function storeFromSlug(slug: string): StoreKey | undefined {
+  return STORE_KEYS.find((key) => STORES[key].apiSlug === slug);
+}

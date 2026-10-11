@@ -1,0 +1,110 @@
+<!-- Encabezado: miga de pan, contador y carrusel de géneros -->
+<section class="bg-surface pt-5 pb-8">
+  <div class="page">
+    <div class="mb-5 flex flex-wrap items-center justify-between gap-2 text-[13px]">
+      <nav class="text-ink-2" aria-label="Ubicación">
+        <a routerLink="/" class="hover:text-accent">Inicio</a>
+        <span class="mx-1.5 text-ink-3">/</span>
+        <span class="font-medium text-ink">{{ title() }}</span>
+      </nav>
+      @if (catalog.entries()) {
+        <p class="text-ink-2">Mostrando {{ range().from }}–{{ range().to }} de {{ total() }} resultados</p>
+      }
+    </div>
+    <app-genre-carousel [selected]="filters().genres" (toggle)="toggleGenre($event)" />
+  </div>
+</section>
+
+<div class="page mt-10 grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+  <!-- Filtros: columna en escritorio -->
+  <aside class="hidden self-start rounded-card bg-surface p-6 lg:block">
+    <ng-container *ngTemplateOutlet="sidebar" />
+  </aside>
+
+  <section id="resultados" class="min-w-0 scroll-mt-24">
+    <app-shop-toolbar
+      [title]="title()"
+      [perPage]="filters().perPage"
+      [view]="filters().view"
+      [sort]="filters().sort"
+      [activeFilters]="activeFilterCount()"
+      (perPageChange)="setPerPage($event)"
+      (viewChange)="setView($event)"
+      (sortChange)="setSort($event)"
+      (openFilters)="filtersOpen.set(true)"
+    />
+
+    @if (chips().length > 0) {
+      <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[14px]">
+        <button type="button" class="inline-flex items-center gap-1.5 font-medium text-ink hover:text-accent" (click)="clearFilters()">
+          <app-icon name="close" class="text-[11px]" /> Limpiar filtros
+        </button>
+        <span class="h-4 w-px bg-hairline"></span>
+        @for (chip of chips(); track chip.label) {
+          <button type="button" class="inline-flex items-center gap-1.5 text-ink-2 hover:text-accent" [attr.aria-label]="'Quitar ' + chip.label" (click)="removeChip(chip)">
+            <app-icon name="close" class="text-[11px]" /> {{ chip.label }}
+          </button>
+        }
+      </div>
+    }
+
+    <div class="mt-6">
+      @if (pageGames(); as games) {
+        @if (games.length === 0) {
+          <div class="rounded-card border-2 border-dashed border-hairline px-6 py-16 text-center">
+            <app-icon name="search" class="text-4xl text-ink-3" />
+            <h2 class="mt-3 text-xl">Ningún juego coincide con esos filtros</h2>
+            <p class="mt-1 text-sm text-ink-2">Probá quitando alguno.</p>
+            <button type="button" class="btn-primary mt-5" (click)="clearFilters()">Limpiar filtros</button>
+          </div>
+        } @else if (filters().view === 'lista') {
+          <div class="space-y-4">
+            @for (game of games; track game.url) {
+              <app-shop-list-item [game]="game" />
+            }
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 gap-x-5 gap-y-8" [class]="gridClass()">
+            @for (game of games; track game.url) {
+              <app-game-card [game]="game" />
+            }
+          </div>
+        }
+        <div class="mt-12">
+          <app-pagination [page]="page()" [pages]="pages()" (change)="goToPage($event)" />
+        </div>
+      } @else if (catalog.failed()) {
+        <p class="py-16 text-center text-ink-2">No pudimos cargar el catálogo. Probá de nuevo en un momento.</p>
+      } @else {
+        <div class="grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 xl:grid-cols-4" aria-hidden="true">
+          @for (n of [0, 1, 2, 3, 4, 5, 6, 7]; track n) {
+            <div>
+              <div class="skeleton aspect-[3/4] rounded-card"></div>
+              <div class="skeleton mt-3 h-4 w-3/4 rounded"></div>
+              <div class="skeleton mt-2 h-4 w-1/3 rounded"></div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+</div>
+
+@if (filtersOpen()) {
+  <app-filters-drawer (closed)="filtersOpen.set(false)">
+    <ng-container *ngTemplateOutlet="sidebar" />
+  </app-filters-drawer>
+}
+
+<!-- Los mismos filtros en la columna y en el panel móvil -->
+<ng-template #sidebar>
+  <app-shop-sidebar
+    [filters]="filters()"
+    [counts]="counts()"
+    [genreOptions]="genreOptions()"
+    [maxPrice]="catalog.maxPrice()"
+    [currencySymbol]="currencySymbol()"
+    (toggle)="toggle($event)"
+    (price)="setPrice($event)"
+  />
+</ng-template>

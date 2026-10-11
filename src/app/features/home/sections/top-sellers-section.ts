@@ -1,4 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Icon } from '../../../shared/ui/icon/icon';
+import { shopLink } from '../../shop/shop-filters.model';
 import type { StoreKey } from '../../../core/models/game';
 import { HomeDataStore } from '../../../core/state/home-data.store';
 import { STORE_KEYS, STORES } from '../../../core/stores';
@@ -12,7 +15,7 @@ type Tab = 'all' | StoreKey;
 // está arriba) o los de una tienda en particular.
 @Component({
   selector: 'app-top-sellers-section',
-  imports: [GameCard, SectionHeader, CardGridSkeleton],
+  imports: [RouterLink, Icon, GameCard, SectionHeader, CardGridSkeleton],
   template: `
     <section id="mas-vendidos" class="page mt-16 scroll-mt-24">
       <app-section-header title="Más vendidos">
@@ -27,6 +30,7 @@ type Tab = 'all' | StoreKey;
             {{ t.label }}
           </button>
         }
+        <a routerLink="/juegos" [queryParams]="viewAll()" class="btn-soft ml-1">Ver todos <app-icon name="chevron-right" class="text-[11px]" /></a>
       </app-section-header>
 
       @if (games(); as list) {
@@ -52,6 +56,12 @@ export class TopSellersSection {
   ];
   // Pestaña elegida: estado local de la sección.
   protected readonly tab = signal<Tab>('all');
+
+  // "Ver todos" lleva a Juegos con la lista y, si hay pestaña, la tienda.
+  protected readonly viewAll = computed(() => {
+    const tab = this.tab();
+    return shopLink({ lists: ['mas-vendidos'], stores: tab === 'all' ? [] : [tab] });
+  });
 
   protected readonly games = computed(() => {
     const tab = this.tab();

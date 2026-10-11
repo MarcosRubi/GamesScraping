@@ -1,4 +1,6 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { shopLink } from '../../features/shop/shop-filters.model';
 import { dismissOnOutside } from '../../core/browser/dismiss';
 import { FiltersStore } from '../../core/state/filters.store';
 import { SectionNavigator } from '../../core/state/section-navigator';
@@ -15,7 +17,7 @@ import { ThemeToggle } from './theme-toggle';
 // géneros), buscador, moneda y tema. Bajo 1024px todo pasa a un menú lateral.
 @Component({
   selector: 'app-header',
-  imports: [Icon, MegaMenu, MobileMenu, CurrencySwitch, ThemeToggle, HowItWorks],
+  imports: [RouterLink, Icon, MegaMenu, MobileMenu, CurrencySwitch, ThemeToggle, HowItWorks],
   templateUrl: './header.html',
 })
 export class Header {
@@ -25,6 +27,7 @@ export class Header {
   protected readonly preferences = inject(PreferencesStore);
 
   // Estado local del header: solo él lo usa.
+  protected readonly offersLink = shopLink({ lists: ['ofertas'] });
   protected readonly megaOpen = signal(false);
   protected readonly howOpen = signal(false);
   protected readonly mobileOpen = signal(false);
@@ -45,6 +48,11 @@ export class Header {
       () => [this.howPanel()?.nativeElement, this.howTrigger()?.nativeElement],
       () => this.howOpen.set(false),
     );
+  }
+
+  protected closePanels(): void {
+    this.megaOpen.set(false);
+    this.howOpen.set(false);
   }
 
   // Un solo panel abierto a la vez.

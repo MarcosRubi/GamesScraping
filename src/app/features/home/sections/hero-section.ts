@@ -1,4 +1,6 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { shopLink } from '../../shop/shop-filters.model';
 import { pageVisible } from '../../../core/browser/browser-signals';
 import { HomeDataStore } from '../../../core/state/home-data.store';
 import { SearchNavigator } from '../../../core/state/search-navigator';
@@ -15,7 +17,7 @@ const ROTATE_MS = 7000;
 // tráiler) + "Juegos en oferta" de todas las tiendas al costado.
 @Component({
   selector: 'app-hero-section',
-  imports: [GameRow, Icon, Price, StoreTag],
+  imports: [RouterLink, GameRow, Icon, Price, StoreTag],
   template: `
     <section class="page mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
       @let slides = home.hero();
@@ -80,10 +82,13 @@ const ROTATE_MS = 7000;
       </div>
 
       <aside id="ofertas" class="scroll-mt-24">
-        <h2 class="mb-4 flex items-center gap-2.5 text-[18px]">
-          <span class="grid size-7 place-items-center rounded-full border border-accent text-[12px] text-accent"><app-icon name="percent" /></span>
-          Juegos en oferta
-        </h2>
+        <div class="mb-4 flex items-center justify-between gap-2">
+          <h2 class="flex items-center gap-2.5 text-[18px]">
+            <span class="grid size-7 place-items-center rounded-full border border-accent text-[12px] text-accent"><app-icon name="percent" /></span>
+            Juegos en oferta
+          </h2>
+          <a routerLink="/juegos" [queryParams]="offersLink" class="text-[13px] font-medium text-accent hover:underline">Ver todas</a>
+        </div>
         <div class="space-y-1 rounded-card bg-surface p-3">
           @if (home.discounted(); as games) {
             @for (game of games; track game.url) {
@@ -106,6 +111,7 @@ export class HeroSection {
   protected readonly navigator = inject(SearchNavigator);
   protected readonly ui = inject(UiStore);
 
+  protected readonly offersLink = shopLink({ lists: ['ofertas'] });
   private readonly visible = pageVisible();
   protected readonly paused = signal(false);
   protected readonly index = signal(0);
